@@ -441,6 +441,7 @@ function render3d(p,w,c1,c2,L,S,seq){
    for(let a=0;a<nx;a++)for(let b=0;b<nz;b++)q.push(-W2/2+.3+a*sp,T,zs+.12+b*(isw-.12)/(nz-1),pr+((a*7+b*13)%5)*.04,((a+b)%3-1)*.08,((a*3+b)%3-1)*.08)}
   if(i<n-1)CO.forEach(q=>sl.push(q,B+hh*.5,z0+wd+gps[i]/2,gps[i]));
  }
+ CO.forEach(q=>add(.12,.12,Lz,q,B+hh*.5,0,gr));
  const dm=new THREE.Object3D(),ub=new THREE.BoxGeometry(1,1,1);
  BK.forEach((q,m)=>{const c=q.length/6,im=new THREE.InstancedMesh(ub,m,c);for(let i=0;i<c;i++){dm.position.set(q[6*i+3],q[6*i+4],q[6*i+5]);dm.rotation.set(0,0,0);dm.scale.set(q[6*i],q[6*i+1],q[6*i+2]);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)});
  const uc=new THREE.CylinderGeometry(.09,.09,1,5);
@@ -462,8 +463,8 @@ function upd(){
  const Lin=Math.max(3,+$("#cL").value||0),S=Math.max(30,+$("#cS").value||0),pl=plan(Math.round(Lin*10),30),L=pl.L/10,fc=v=>v.toFixed(1).replace(".",","),a=Math.max(.24,L*S/10000),pr=m2(cP.value,cW.value),mont=+$("#cM").value;
  const rk=+$("#cR").value,rl=rk?(rk===4?2*(L+S):rk*S)/100:0,rp=Math.round(rl*RAMPZ),net=a*pr+mont*(S/100)+rp;$("#sRampRow").hidden=!rk;$("#rampBox").hidden=!rk;if(rk)$("#sRamp").textContent=rl.toFixed(2).replace(".",",")+" mb × "+RAMPZ+" zł = "+pln(rp);
  {const big=Lin>=300||(+$("#cS").value||0)>=300,h=$("#splitHint");h.hidden=!big;if(big){const sp=Lin>=300?[Math.ceil(Lin/2),S]:[Lin,Math.ceil(S/2)];h.dataset.l=sp[0];h.dataset.s=sp[1];$("#splitTxt").textContent="Przy wymiarze 3 m i więcej łatwiej przewieźć i zamontować dwie mniejsze wycieraczki: 2 sztuki po "+sp[0]+"×"+sp[1]+" cm. Dodaj do koszyka 2 sztuki."}}
- $("#sArea").textContent=a.toFixed(2).replace(".",",")+" m²";$("#sPr").textContent=pl.n+" szt.";$("#sSp").textContent=pl.n>1?(pl.n-1)+" szt.":"brak";$("#sLen").textContent=fc(L)+" cm (swobodnie "+fc((pl.L+pl.n-1)/10)+" cm)";$("#sNote").textContent=(pl.L!==Math.round(Lin*10)?"Długość dopasowano do najbliższej możliwej: "+fc(L)+" cm.":"Tulejki dystansowe między profilami są ściśnięte, co zapewnia elastyczność maty.")+" Linki: "+cords(S).length+" szt. (rozstaw do 40 cm).";$("#sM2").textContent=pln(pr);$("#sNet").textContent=pln(net);$("#sGross").textContent=pln(net*1.23);
- $("#cfgSvg").innerHTML=svg(cP.value,cW.value,col,col2,undefined,S);$("#cfgSec").innerHTML=strips(cP.value,cW.value,col,400,240,col2).match(/<defs>.*?<\/defs>/)[0]+section(cP.value,cW.value,col,col2);render3d(cP.value,cW.value,col,mix?col2:col,L,S);
+ $("#sArea").textContent=a.toFixed(2).replace(".",",")+" m²";$("#sPr").textContent=pl.n+" szt.";$("#sSp").textContent=pl.n>1?(pl.n-1)+" szt.":"brak";$("#sLen").textContent=fc(L)+" cm (swobodnie "+fc((pl.L+pl.n-1)/10)+" cm)";$("#sNote").textContent=(pl.L!==Math.round(Lin*10)?"Długość dopasowano do najbliższej możliwej: "+fc(L)+" cm.":"Tulejki dystansowe między profilami są ściśnięte, co zapewnia elastyczność maty.");$("#sM2").textContent=pln(pr);$("#sNet").textContent=pln(net);$("#sGross").textContent=pln(net*1.23);
+ $("#cfgSvg").innerHTML=svg(cP.value,cW.value,col,col2);$("#cfgSec").innerHTML=strips(cP.value,cW.value,col,400,240,col2).match(/<defs>.*?<\/defs>/)[0]+section(cP.value,cW.value,col,col2);render3d(cP.value,cW.value,col,mix?col2:col,L,S);
  const cn=mix?`${LN[kk.a]}: ${cname(col).toLowerCase()}, ${LN[kk.b]}: ${cname(col2).toLowerCase()}`:cname(col);
  cur={name:`${kk.n}, ${cP.value}, ${cn}, ${fc(L)}×${S} cm, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}`,gross:Math.round(net*123)/100};
 }
