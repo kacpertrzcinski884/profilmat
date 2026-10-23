@@ -222,7 +222,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <div class="full" id="b1"><span id="l1" style="font-size:.85rem;color:var(--mute)">Kolor wkładu</span><div class="sw" id="sw" style="margin-top:6px"></div></div><div class="full" id="b2" hidden><span id="l2" style="font-size:.85rem;color:var(--mute)"></span><div class="sw" id="sw2" style="margin-top:6px"></div></div>
 <label>Długość w kierunku ruchu (cm)<input id="cL" type="number" min="30" max="600" value="120"></label>
 <label>Szerokość, np. światło drzwi (cm)<input id="cS" type="number" min="30" max="300" value="90"></label>
-<div id="splitHint" class="full" hidden style="background:var(--g2);border:1px solid var(--acc);border-radius:8px;padding:12px 14px;font-size:.95rem"><b>Duża wycieraczka. Proponujemy podział na 2 części.</b><br><span id="splitTxt"></span><br><button type="button" class="btn ghost" id="splitBtn" style="margin-top:8px">Ustaw wymiar jednej części</button></div>
+<div id="splitHint" class="full" hidden style="background:var(--g2);border:1px solid var(--acc);border-radius:8px;padding:12px 14px;font-size:.95rem"><b>Duża wycieraczka. Proponujemy podział na 2 części.</b><br><span id="splitTxt"></span><br><button type="button" class="btn ghost" id="splitBtn" style="margin-top:8px">Podziel na 2 części</button><div id="splitParts" hidden style="margin-top:12px;display:none"></div></div>
 <label class="full">Montaż<select id="cM"><option value="0">We wpuście w posadzce</option><option value="0">Na posadzce</option></select></label>
 <label class="full" hidden>Próg najazdowy (aluminiowy)<select id="cR"><option value="2">Progi z 2 stron (wejście i wyjście)</option></select></label>
 <div class="full" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="add">Dodaj do koszyka</button><button class="btn ghost" id="quote">Poproś o wycenę</button></div>
@@ -428,7 +428,18 @@ function upd(){
  const cn=mix?`${LN[kk.a]}: ${cname(col).toLowerCase()}, ${LN[kk.b]}: ${cname(col2).toLowerCase()}`:cname(col);
  cur={name:`${kk.n}, ${cP.value}, ${cn}, ${fc(L)}×${S} cm, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}`,gross:Math.round(net*123)/100};
 }
-$("#splitBtn").onclick=()=>{const h=$("#splitHint");$("#cL").value=h.dataset.l;$("#cS").value=h.dataset.s;upd()};
+$("#splitBtn").onclick=()=>{
+ const h=$("#splitHint"),box=$("#splitParts"),big=+$("#cL").value>=300,L0=+$("#cL").value||0,S0=+$("#cS").value||0;
+ const P=big?[[Math.ceil(L0/2),S0],[Math.floor(L0/2),S0]]:[[L0,Math.ceil(S0/2)],[L0,Math.floor(S0/2)]];
+ box.style.display="block";box.hidden=false;
+ box.innerHTML='<p style="margin:0 0 8px">Ustaw wymiar każdej części osobno. Pozostałe ustawienia (profil, wkład, kolor) są takie same jak wyżej.</p>'+P.map((p,i)=>`<div class="sp" data-i="${i}" style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px"><b style="flex:0 0 100%">Część ${i+1}</b><label style="flex:1;min-width:110px">Długość (cm)<input type="number" min="30" max="600" value="${p[0]}" class="spL"></label><label style="flex:1;min-width:110px">Szerokość (cm)<input type="number" min="30" max="300" value="${p[1]}" class="spS"></label><span class="spP" style="flex:0 0 100%;font-weight:600"></span><button type="button" class="btn ghost spA">Dodaj część ${i+1} do koszyka</button></div>`).join("")+'<button type="button" class="btn" id="spAll">Dodaj obie części do koszyka</button>';
+ const calc=i=>{const r=box.querySelector('.sp[data-i="'+i+'"]'),oL=$("#cL").value,oS=$("#cS").value;let res;try{$("#cL").value=r.querySelector(".spL").value;$("#cS").value=r.querySelector(".spS").value;upd();res={...cur,name:cur.name+" (część "+(i+1)+" z 2)"}}finally{$("#cL").value=oL;$("#cS").value=oS;upd()}return res};
+ const show=()=>{[0,1].forEach(i=>{const c=calc(i);box.querySelector('.sp[data-i="'+i+'"] .spP').textContent=pln(c.gross/1.23)+" netto ("+pln(c.gross)+" brutto)"})};
+ box.oninput=show;show();
+ const add=l=>{l.forEach(i=>cart.push(calc(i)));save();draw();$("#msg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
+ box.querySelectorAll(".spA").forEach((b,i)=>b.onclick=()=>add([i]));$("#spAll").onclick=()=>add([0,1]);
+ $("#splitBtn").hidden=true;
+};
 ["cP","cW","cL","cS","cM","cR"].forEach(i=>$("#"+i).addEventListener("input",upd));
 // koszyk
 let cart=[];try{cart=JSON.parse(localStorage.getItem("pm_cart")||"[]").filter(c=>!/XL 19\/50/.test(c.name))}catch(e){}
