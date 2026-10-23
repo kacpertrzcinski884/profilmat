@@ -270,7 +270,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <button type="button" class="btn ghost" data-t="cut">Wcięcie dowolne</button>
 <button type="button" class="btn ghost" data-t="out">Własny kształt od zera</button>
 <button type="button" class="btn ghost" id="shUndo">Cofnij ruch</button>
-<button type="button" class="btn ghost" id="shClear">Wyczyść</button><button type="button" class="btn ghost" id="shFlip">Zmień stronę wejścia</button></div>
+<button type="button" class="btn ghost" id="shClear">Wyczyść</button><button type="button" class="btn ghost" id="shRot">Obróć o 90°</button><button type="button" class="btn ghost" id="shFlip">Zmień stronę wejścia</button></div>
 <div id="shHelp" style="font-size:.9rem;color:var(--mute);margin-bottom:8px"></div>
 <canvas id="shC" style="width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;touch-action:none;cursor:crosshair"></canvas>
 <div id="shList" style="margin:12px 0;font-size:.95rem"></div>
@@ -675,6 +675,7 @@ cv.addEventListener("dblclick",()=>{if(pts.length>=3)finish()});
 function setTool(t){tool=t;pts=[];drag=null;$("#shHelp").textContent=HELP[t];document.querySelectorAll("#shTools [data-t]").forEach(b=>b.classList.toggle("ghost",b.dataset.t!==t));let fb=$("#shFin");if(t==="rect"){if(fb)fb.remove()}else if(!fb){fb=document.createElement("button");fb.type="button";fb.className="btn ghost";fb.id="shFin";fb.textContent="Zakończ kształt";fb.onclick=finish;$("#shTools").append(fb)}draw()}
 document.querySelectorAll("#shTools [data-t]").forEach(b=>b.onclick=()=>setTool(b.dataset.t));
 $("#shUndo").onclick=()=>{if(pts.length){pts.pop();draw();return}const k=hist.pop();if(k==="c")cuts.pop();else if(k==="o")outline=null;list()};
+$("#shRot").onclick=()=>{const R=p=>[H-p[1],p[0]];cuts=cuts.map(c=>({...c,p:c.p.map(R)}));if(outline)outline=outline.map(R);const t=W;W=H;H=t;ent={L:"T",T:"R",R:"B",B:"L"}[ent];pts=[];hist=[];sync();size();list()};
 $("#shFlip").onclick=()=>{ent={L:"R",R:"L",T:"B",B:"T"}[ent];list()};
 function sync(){$("#shW").value=horiz()?W:H;$("#shH").value=horiz()?H:W}
 $("#shClear").onclick=()=>{cuts=[];outline=null;pts=[];hist=[];list()};
