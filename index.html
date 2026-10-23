@@ -182,8 +182,8 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <path d="M170 20H280V80H170Z" fill="none" stroke="#ff8a3d" stroke-width="2" stroke-dasharray="6 5"/>
 <text x="225" y="54" fill="#ff8a3d" font-size="13" font-weight="700" text-anchor="middle">wcięcie</text>
 <line x1="20" y1="184" x2="280" y2="184" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
-<path d="M150 214V196" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/><path d="M150 188l-10 14h20z" fill="#22c55e"/>
-<text x="196" y="210" fill="#22c55e" font-size="12" font-weight="700">WEJŚCIE</text></svg></div></section>
+<path d="M150 132V160" stroke="#22c55e" stroke-width="6" stroke-linecap="round" opacity=".95"/><path d="M150 178l-13-20h26z" fill="#22c55e" stroke="#16191c" stroke-width="1.5" stroke-linejoin="round"/>
+<text x="150" y="208" fill="#22c55e" font-size="13" font-weight="700" text-anchor="middle">WEJŚCIE</text></svg></div></section>
 <style>@media(max-width:760px){.shb{grid-template-columns:1fr!important;padding:20px!important}}</style>
 <section id="kategorie">
 <h2>Kategorie</h2>
@@ -276,7 +276,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <div id="lb" hidden role="dialog" aria-label="Powiększone zdjęcie"><div></div><button class="btn">Zamknij ✕</button></div>
 <div id="sh" hidden role="dialog" aria-modal="true" aria-label="Kreator kształtu wycieraczki" style="position:fixed;inset:0;z-index:60;background:var(--bg);overflow:auto"><div style="max-width:980px;margin:0 auto;padding:16px 20px 40px">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Kreator kształtu wycieraczki</h2><button type="button" class="btn ghost" id="shX">← Cofnij</button></div>
-<p style="color:var(--mute);margin:6px 0 12px">Wybierz narzędzie i rysuj na planie. Zielona strzałka pokazuje, z której strony się wchodzi. Profile układają się w poprzek kierunku wejścia. Miarka ma podziałkę co 1 cm, a wymiary rysujesz z dokładnością do 1 cm.</p>
+<p style="color:var(--mute);margin:6px 0 12px">Wybierz narzędzie i rysuj na planie. Zielona kreska i strzałka pokazują, z której strony jest wejście. Profile układają się w poprzek kierunku wejścia. Miarka ma podziałkę co 1 cm, a wymiary rysujesz z dokładnością do 1 cm.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
 <label style="font-size:.85rem;color:var(--mute)">Długość w kierunku wejścia (cm)<input id="shW" type="number" min="30" max="600" style="display:block;width:110px"></label>
 <label style="font-size:.85rem;color:var(--mute)">Szerokość (cm)<input id="shH" type="number" min="30" max="300" style="display:block;width:110px"></label></div>
@@ -671,13 +671,13 @@ function ruler(){
  g.font="bold 11px sans-serif";g.textAlign="right";g.fillText("cm",ox+W*sc,oy-28+2);
 }
 function entry(){
- const d={L:[1,0],R:[-1,0],T:[0,1],B:[0,-1]}[ent],mid={L:[0,H/2],R:[W,H/2],T:[W/2,0],B:[W/2,H]}[ent],m=P(mid);
+ const d={L:[1,0],R:[-1,0],T:[0,1],B:[0,-1]}[ent],mid={L:[0,H/2],R:[W,H/2],T:[W/2,0],B:[W/2,H]}[ent],m=P(mid),u=[-d[0],-d[1]],pp=[-u[1],u[0]];
  g.save();g.strokeStyle="#15803d";g.fillStyle="#15803d";g.lineCap="round";g.lineWidth=5;
- const e=d[0]?[[m[0],oy],[m[0],oy+H*sc]]:[[ox,m[1]],[ox+W*sc,m[1]]];g.globalAlpha=1;g.beginPath();g.moveTo(e[0][0],e[0][1]);g.lineTo(e[1][0],e[1][1]);g.stroke();
- const len=Math.min(90,(d[0]?W:H)*sc*.3),a=[m[0]+d[0]*14,m[1]+d[1]*14],b=[a[0]+d[0]*len,a[1]+d[1]*len];
- g.lineWidth=6;g.globalAlpha=.85;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();
- g.beginPath();g.moveTo(b[0]+d[0]*16,b[1]+d[1]*16);g.lineTo(b[0]-d[1]*12,b[1]+d[0]*12);g.lineTo(b[0]+d[1]*12,b[1]-d[0]*12);g.closePath();g.fill();
- g.globalAlpha=1;g.font="bold 12px sans-serif";g.textAlign="center";g.textBaseline="middle";const t="WEJŚCIE",tx=a[0]+d[0]*(len+44)-(d[0]?0:0),ty=a[1]+d[1]*(len+44),w=g.measureText(t).width+14;
+ const e=d[0]?[[m[0],oy],[m[0],oy+H*sc]]:[[ox,m[1]],[ox+W*sc,m[1]]];g.beginPath();g.moveTo(e[0][0],e[0][1]);g.lineTo(e[1][0],e[1][1]);g.stroke();
+ const len=Math.min(90,(d[0]?W:H)*sc*.3),tip=[m[0]+d[0]*12,m[1]+d[1]*12],tail=[tip[0]+d[0]*(len+16),tip[1]+d[1]*(len+16)],base=[tip[0]+d[0]*16,tip[1]+d[1]*16];
+ g.lineWidth=7;g.globalAlpha=.9;g.beginPath();g.moveTo(tail[0],tail[1]);g.lineTo(base[0],base[1]);g.stroke();
+ g.globalAlpha=1;g.beginPath();g.moveTo(tip[0],tip[1]);g.lineTo(base[0]+pp[0]*13,base[1]+pp[1]*13);g.lineTo(base[0]-pp[0]*13,base[1]-pp[1]*13);g.closePath();g.fill();g.lineWidth=1.5;g.strokeStyle="#fff";g.stroke();
+ g.font="bold 12px sans-serif";g.textAlign="center";g.textBaseline="middle";const t="WEJŚCIE",tx=tail[0]+d[0]*34,ty=tail[1]+d[1]*22,w=g.measureText(t).width+14;
  g.fillStyle="#15803d";g.fillRect(tx-w/2,ty-10,w,20);g.fillStyle="#fff";g.fillText(t,tx,ty);g.restore();g.textBaseline="alphabetic";
 }
 function edgeLabels(){
