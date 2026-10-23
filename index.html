@@ -311,10 +311,11 @@ const $=s=>document.querySelector(s),pln=v=>v.toLocaleString("pl-PL",{minimumFra
 const m2=(p,w)=>PR.find(x=>x.id===p).base+WK.find(x=>x.id===w).add;
 function shade(h,a){const n=parseInt(h.slice(1),16);return"#"+[n>>16&255,n>>8&255,n&255].map(v=>Math.max(0,Math.min(255,v+a)).toString(16).padStart(2,"0")).join("")}
 function pat(c,hi,lo){return `<pattern id="pT${c}" width="4" height="2.6" patternUnits="userSpaceOnUse"><rect width="4" height="1.2" fill="${hi}" opacity=".4"/></pattern><pattern id="pS${c}" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.7" fill="${lo}"/><circle cx="1.8" cy="1.8" r="1" fill="${hi}"/></pattern>`}
-function strips(p,w,col,W,H,col2,seq){
+function cords(S){const m=Math.min(10,S*.2),span=Math.max(0,S-2*m),k=Math.max(2,Math.ceil(span/40-1e-9)+1);return Array.from({length:k},(_,i)=>m+span*i/(k-1)-S/2)}
+function strips(p,w,col,W,H,col2,seq,S){
  const k=WK.find(x=>x.id===w);if(!col2||k.a===k.b)col2=col;seq=seq||[{t:k.a,c:col},{t:k.b,c:col2}];
  const hi=shade(col,50),lo=shade(col,-30),c=col.slice(1),hi2=shade(col2,50),lo2=shade(col2,-30),c2=col2.slice(1);
- const wd=36,f=5.4,iw=wd-2*f,gap=6,ys=[H*.28,H*.72];
+ const wd=36,f=5.4,iw=wd-2*f,gap=6,ys=S?cords(S).map(o=>H/2+o/S*(H-18)):[H*.28,H*.72];
  const ins=(t,x,y,w,h,col,hi,lo,c)=>{let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${t==="s"?lo:col}"/>`;
   if(t==="t")s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#pT${c})"/>`;
   if(t==="s")s+=`<rect x="${x+2}" y="${y}" width="${w-4}" height="${h}" fill="url(#pS${c})"/><rect x="${x}" y="${y}" width="2" height="${h}" fill="#141517"/><rect x="${x+w-2}" y="${y}" width="2" height="${h}" fill="#141517"/>`;
@@ -348,7 +349,7 @@ function section(p,w,col,col2,seq){
  }
  return o+"</g>";
 }
-const svg=(p,w,c,c2,q)=>strips(p,w,c,400,240,c2,q);
+const svg=(p,w,c,c2,q,S)=>strips(p,w,c,400,240,c2,q,S);
 // katalog
 const fP=$("#fP"),fW=$("#fW"),cP=$("#cP"),cW=$("#cW");
 PR.forEach(p=>{fP.add(new Option(p.n,p.id));cP.add(new Option(p.n+" – "+p.t,p.id))});
@@ -416,7 +417,7 @@ function render3d(p,w,c1,c2,L,S,seq){
  const wd=3,gp=.5,pitch=wd+gp,hh=p==="12/30"?1.2:1.9,fo=.1,B=fo,T=B+hh,f=.45,sw=wd-2*f,isw=sw-.12,tw=.17,ft=.11,cavh=hh-.89;
  const Sc=close?Math.min(S,12):S,PL=plan(Math.round(L*10),wd*10),n=close?Math.min(PL.n,6):PL.n,gps=gapsOf(PL).slice(0,n-1).map(x=>x/10),off=[0];
  for(let i=0;i<n-1;i++)off.push(off[i]+wd+gps[i]);
- const Lz=off[n-1]+wd,W2=Sc-.4;
+ const Lz=off[n-1]+wd,W2=Sc-.4;let CO=cords(S);if(close){CO=CO.filter(x=>Math.abs(x)<=Sc/2-.3);if(!CO.length)CO=[-.3*Sc,.3*Sc]}
  const MT={},mat=(c,ro,me)=>{const q=c+"|"+ro+"|"+me;return MT[q]||(MT[q]=new THREE.MeshStandardMaterial({color:c,roughness:ro,metalness:me}))};
  const alu=mat("#c9ced3",.45,.35),dark=mat("#17191b",.85,0),gr=mat("#7f868c",.6,0),slv=mat("#17191b",.9,0);
  const BK=new Map(),add=(a,b,c,x,y,z,m)=>{let q=BK.get(m);if(!q)BK.set(m,q=[]);q.push(a,b,c,x,y,z)},br={},sl=[];
@@ -438,7 +439,7 @@ function render3d(p,w,c1,c2,L,S,seq){
   if(tp==="t")for(let j=0,m=Math.floor(isw/.3);j<m;j++)add(W2,pr,.14,0,T+pr/2,zs+.13+j*(isw-.14)/(m-1),mc);
   if(tp==="s"){const nx=Math.floor((W2-.4)/sp),nz=Math.max(3,Math.floor(isw/sp)),q=br[cc]||(br[cc]=[]);
    for(let a=0;a<nx;a++)for(let b=0;b<nz;b++)q.push(-W2/2+.3+a*sp,T,zs+.12+b*(isw-.12)/(nz-1),pr+((a*7+b*13)%5)*.04,((a+b)%3-1)*.08,((a*3+b)%3-1)*.08)}
-  if(i<n-1)[-.3,.3].forEach(q=>sl.push(Sc*q,B+hh*.5,z0+wd+gps[i]/2,gps[i]));
+  if(i<n-1)CO.forEach(q=>sl.push(q,B+hh*.5,z0+wd+gps[i]/2,gps[i]));
  }
  const dm=new THREE.Object3D(),ub=new THREE.BoxGeometry(1,1,1);
  BK.forEach((q,m)=>{const c=q.length/6,im=new THREE.InstancedMesh(ub,m,c);for(let i=0;i<c;i++){dm.position.set(q[6*i+3],q[6*i+4],q[6*i+5]);dm.rotation.set(0,0,0);dm.scale.set(q[6*i],q[6*i+1],q[6*i+2]);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)});
@@ -461,8 +462,8 @@ function upd(){
  const Lin=Math.max(3,+$("#cL").value||0),S=Math.max(30,+$("#cS").value||0),pl=plan(Math.round(Lin*10),30),L=pl.L/10,fc=v=>v.toFixed(1).replace(".",","),a=Math.max(.24,L*S/10000),pr=m2(cP.value,cW.value),mont=+$("#cM").value;
  const rk=+$("#cR").value,rl=rk?(rk===4?2*(L+S):rk*S)/100:0,rp=Math.round(rl*RAMPZ),net=a*pr+mont*(S/100)+rp;$("#sRampRow").hidden=!rk;$("#rampBox").hidden=!rk;if(rk)$("#sRamp").textContent=rl.toFixed(2).replace(".",",")+" mb × "+RAMPZ+" zł = "+pln(rp);
  {const big=Lin>=300||(+$("#cS").value||0)>=300,h=$("#splitHint");h.hidden=!big;if(big){const sp=Lin>=300?[Math.ceil(Lin/2),S]:[Lin,Math.ceil(S/2)];h.dataset.l=sp[0];h.dataset.s=sp[1];$("#splitTxt").textContent="Przy wymiarze 3 m i więcej łatwiej przewieźć i zamontować dwie mniejsze wycieraczki: 2 sztuki po "+sp[0]+"×"+sp[1]+" cm. Dodaj do koszyka 2 sztuki."}}
- $("#sArea").textContent=a.toFixed(2).replace(".",",")+" m²";$("#sPr").textContent=pl.n+" szt.";$("#sSp").textContent=pl.n>1?(pl.n-1)+" szt.":"brak";$("#sLen").textContent=fc(L)+" cm (swobodnie "+fc((pl.L+pl.n-1)/10)+" cm)";$("#sNote").textContent=pl.L!==Math.round(Lin*10)?"Długość dopasowano do najbliższej możliwej: "+fc(L)+" cm.":"Tulejki dystansowe między profilami są ściśnięte, co zapewnia elastyczność maty.";$("#sM2").textContent=pln(pr);$("#sNet").textContent=pln(net);$("#sGross").textContent=pln(net*1.23);
- $("#cfgSvg").innerHTML=svg(cP.value,cW.value,col,col2);$("#cfgSec").innerHTML=strips(cP.value,cW.value,col,400,240,col2).match(/<defs>.*?<\/defs>/)[0]+section(cP.value,cW.value,col,col2);render3d(cP.value,cW.value,col,mix?col2:col,L,S);
+ $("#sArea").textContent=a.toFixed(2).replace(".",",")+" m²";$("#sPr").textContent=pl.n+" szt.";$("#sSp").textContent=pl.n>1?(pl.n-1)+" szt.":"brak";$("#sLen").textContent=fc(L)+" cm (swobodnie "+fc((pl.L+pl.n-1)/10)+" cm)";$("#sNote").textContent=(pl.L!==Math.round(Lin*10)?"Długość dopasowano do najbliższej możliwej: "+fc(L)+" cm.":"Tulejki dystansowe między profilami są ściśnięte, co zapewnia elastyczność maty.")+" Linki: "+cords(S).length+" szt. (rozstaw do 40 cm).";$("#sM2").textContent=pln(pr);$("#sNet").textContent=pln(net);$("#sGross").textContent=pln(net*1.23);
+ $("#cfgSvg").innerHTML=svg(cP.value,cW.value,col,col2,undefined,S);$("#cfgSec").innerHTML=strips(cP.value,cW.value,col,400,240,col2).match(/<defs>.*?<\/defs>/)[0]+section(cP.value,cW.value,col,col2);render3d(cP.value,cW.value,col,mix?col2:col,L,S);
  const cn=mix?`${LN[kk.a]}: ${cname(col).toLowerCase()}, ${LN[kk.b]}: ${cname(col2).toLowerCase()}`:cname(col);
  cur={name:`${kk.n}, ${cP.value}, ${cn}, ${fc(L)}×${S} cm, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}`,gross:Math.round(net*123)/100};
 }
@@ -646,7 +647,7 @@ function paintMat(){
  const R=(u,v,w,h,fill)=>{g.fillStyle=fill;if(hz)g.fillRect(ox+u*sc,oy+v*sc,w*sc,h*sc);else g.fillRect(ox+v*sc,oy+u*sc,h*sc,w*sc)};
  const fine=sc>=2.2;
  R(0,0,len,wid,"#eceff1");
- [wid*.28,wid*.72].forEach(v=>R(0,v-.12,len,.24,"#8b9096"));
+ const CV=cords(wid).map(o=>wid/2+o);CV.forEach(v=>R(0,v-.12,len,.24,"#8b9096"));
  let u=0;
  for(let i=0;i<P.n;i++){
   const e=seq[i%2],c=e.c;
@@ -657,10 +658,10 @@ function paintMat(){
   if(e.t==="s"){R(u+.48,0,.14,wid,"#141517");R(u+2.38,0,.14,wid,"#141517");if(fine)for(let v=0;v<wid;v+=.2)R(u+.66,v,1.68,.07,shade(c,12))}
   R(u+.48,0,.2,wid,"rgba(0,0,0,.22)");R(u+2.32,0,.2,wid,"rgba(0,0,0,.22)");
   u+=3;
-  if(i<P.n-1){const gap=gp[i]/10;R(u,0,gap,wid,"#eceff1");[wid*.28,wid*.72].forEach(v=>{R(u,v-.45,gap,.9,"#121314");R(u,v-.12,gap,.24,"#8b9096")});u+=gap}
+  if(i<P.n-1){const gap=gp[i]/10;R(u,0,gap,wid,"#eceff1");CV.forEach(v=>{R(u,v-.45,gap,.9,"#121314");R(u,v-.12,gap,.24,"#8b9096")});u+=gap}
  }
  if(u<len)R(u,0,len-u,wid,"#cdd2d7");
- const L=$("#shLeg");if(L){const nm=x=>({t:"tekstylny",g:"gumowy",s:"szczotkowy"})[x];L.textContent="Ilustracja wg ustawień z konfiguratora: "+P.n+" profili aluminiowych "+cP.value+" mm, między nimi tulejki dystansowe (7–8 mm), wkład "+nm(kk.a)+(kk.a!==kk.b?" i "+nm(kk.b):"")+", kolor "+cname(col).toLowerCase()+(kk.a!==kk.b?" / "+cname(col2).toLowerCase():"")+"."}
+ const L=$("#shLeg");if(L){const nm=x=>({t:"tekstylny",g:"gumowy",s:"szczotkowy"})[x];L.textContent="Ilustracja wg ustawień z konfiguratora: "+P.n+" profili aluminiowych "+cP.value+" mm, między nimi tulejki dystansowe (7–8 mm) na "+CV.length+" linkach (rozstaw do 40 cm), wkład "+nm(kk.a)+(kk.a!==kk.b?" i "+nm(kk.b):"")+", kolor "+cname(col).toLowerCase()+(kk.a!==kk.b?" / "+cname(col2).toLowerCase():"")+"."}
 }
 function ruler(){
  const st=sc>=3?1:(sc>=1.2?5:10),lab=sc*10>=26?10:(sc*10>=13?20:50);
@@ -695,7 +696,7 @@ function list(){
  $("#shSum").textContent="Pole: "+fm(a.toFixed(2))+" m². Orientacyjnie "+pln(net)+" netto ("+pln(net*1.23)+" brutto).";
  draw();
 }
-const desc=()=>{const kk=WK.find(x=>x.id===cW.value);let t="Niestandardowy kształt wycieraczki: "+kk.n+", profil "+cP.value+", kolor "+cname(col)+". Pole obrysu "+fm(W)+"×"+fm(H)+" cm (plan oglądany z góry, wymiary od lewego górnego rogu). Wejście "+ENT[ent]+", profile w poprzek kierunku wejścia. ";if(outline)t+="Własny obrys, punkty (x,y w cm od lewego górnego rogu): "+outline.map(p=>"("+p[0]+","+p[1]+")").join(" ")+". ";t+=cuts.length?"Wcięcia: "+cuts.map((c,i)=>(i+1)+") "+dsc(c)).join("; ")+". ":"Bez wcięć. ";return t+"Pole wycieraczki: "+fm((total()/10000).toFixed(2))+" m²."};
+const desc=()=>{const kk=WK.find(x=>x.id===cW.value);let t="Niestandardowy kształt wycieraczki: "+kk.n+", profil "+cP.value+", kolor "+cname(col)+". Pole obrysu "+fm(W)+"×"+fm(H)+" cm (plan oglądany z góry, wymiary od lewego górnego rogu). Wejście "+ENT[ent]+", profile w poprzek kierunku wejścia. ";if(outline)t+="Własny obrys, punkty (x,y w cm od lewego górnego rogu): "+outline.map(p=>"("+p[0]+","+p[1]+")").join(" ")+". ";t+=cuts.length?"Wcięcia: "+cuts.map((c,i)=>(i+1)+") "+dsc(c)).join("; ")+". ":"Bez wcięć. ";return t+"Linki: "+cords(horiz()?H:W).length+" szt. (rozstaw do 40 cm). Pole wycieraczki: "+fm((total()/10000).toFixed(2))+" m²."};
 function pos(e){const r=cv.getBoundingClientRect(),x=(e.clientX-r.left-ox)/sc,y=(e.clientY-r.top-oy)/sc;return[cl(sn(x),0,W),cl(sn(y),0,H)]}
 function push(k){hist.push(k)}
 function finish(){
