@@ -618,7 +618,7 @@ window.__cartDraw=draw;
 const sh=$("#sh"),cv=$("#shC"),g=cv.getContext("2d"),G=1;
 let ent="L",W=120,H=90,tool="rect",cuts=[],outline=null,pts=[],drag=null,hov=null,hist=[];
 const sn=v=>Math.round(v/G)*G,cl=(v,a,b)=>Math.max(a,Math.min(b,v)),fm=v=>String(v).replace(".",",");
-const HELP={rect:"Przeciągnij myszą (lub palcem), aby narysować prostokątne wcięcie, np. pod słupek lub w narożniku.",cut:"Klikaj kolejne punkty wcięcia. Zakończ, klikając pierwszy punkt albo przyciskiem Zakończ.",out:"Klikaj kolejne punkty obrysu całej wycieraczki. Zakończ, klikając pierwszy punkt albo przyciskiem Zakończ."};
+const HELP={rect:"Przeciągnij po planie albo kliknij (dotknij) dwa przeciwległe narożniki wcięcia, np. pod słupek lub w narożniku.",cut:"Klikaj kolejne punkty wcięcia. Zakończ, klikając pierwszy punkt albo przyciskiem Zakończ.",out:"Klikaj kolejne punkty obrysu całej wycieraczki. Zakończ, klikając pierwszy punkt albo przyciskiem Zakończ."};
 const dsc=c=>{const xs=c.p.map(q=>q[0]),ys=c.p.map(q=>q[1]),x1=Math.min(...xs),x2=Math.max(...xs),y1=Math.min(...ys),y2=Math.max(...ys);return c.r?fm(x2-x1)+"×"+fm(y2-y1)+" cm, lewy górny róg w punkcie ("+x1+","+y1+") cm":"wielokąt, "+c.p.length+" pkt, pole "+fm((area(c.p)/10000).toFixed(2))+" m², obszar od ("+x1+","+y1+") do ("+x2+","+y2+") cm"};
 const horiz=()=>ent==="L"||ent==="R",ENT={L:"z lewej strony planu",T:"z góry planu",R:"z prawej strony planu",B:"z dołu planu"};
 const area=p=>{let s=0;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];s+=a[0]*b[1]-b[0]*a[1]}return Math.abs(s)/2};
@@ -640,7 +640,7 @@ function draw(){
  g.lineWidth=2;g.strokeStyle="#16191c";path(base());g.stroke();
  cuts.forEach(c=>{g.strokeStyle="#c2410c";g.lineWidth=2;path(c.p);g.stroke()});
  ruler();edgeLabels();entry();
- if(drag){const a=drag.a,b=drag.b||a;g.strokeStyle="#c2410c";g.setLineDash([6,4]);path([[a[0],a[1]],[b[0],a[1]],[b[0],b[1]],[a[0],b[1]]]);g.stroke();g.setLineDash([]);g.fillStyle="#c2410c";const w=Math.abs(b[0]-a[0]),h=Math.abs(b[1]-a[1]),q=P([Math.max(a[0],b[0]),Math.min(a[1],b[1])]);g.textAlign="left";g.fillText(fm(w)+"×"+fm(h)+" cm",q[0]+6,q[1]-6)}
+ const DR=drag||(rc&&hov?{a:rc,b:hov}:null);if(DR){const a=DR.a,b=DR.b||a;g.strokeStyle="#c2410c";g.setLineDash([6,4]);path([[a[0],a[1]],[b[0],a[1]],[b[0],b[1]],[a[0],b[1]]]);g.stroke();g.setLineDash([]);g.fillStyle="#c2410c";const w=Math.abs(b[0]-a[0]),h=Math.abs(b[1]-a[1]),q=P([Math.max(a[0],b[0]),Math.min(a[1],b[1])]);g.textAlign="left";g.fillText(fm(w)+"×"+fm(h)+" cm",q[0]+6,q[1]-6)}
  if(pts.length){g.strokeStyle="#c2410c";g.lineWidth=2;g.setLineDash([6,4]);g.beginPath();pts.forEach((q,i)=>{const a=P(q);i?g.lineTo(a[0],a[1]):g.moveTo(a[0],a[1])});if(hov){const a=P(hov);g.lineTo(a[0],a[1])}g.stroke();g.setLineDash([]);pts.forEach((q,i)=>{const a=P(q);g.fillStyle=i?"#c2410c":"#16191c";g.beginPath();g.arc(a[0],a[1],4,0,7);g.fill()})}
 }
 function paintMat(){
@@ -706,11 +706,14 @@ function finish(){
  if(tool==="out"){outline=p;push("o")}else{const xs=p.map(q=>q[0]),ys=p.map(q=>q[1]);cuts.push({p});push("c")}
  list();
 }
-cv.addEventListener("pointerdown",e=>{const p=pos(e);if(tool==="rect"){cv.setPointerCapture(e.pointerId);drag={a:p,b:p};draw()}else{if(pts.length>=3&&Math.hypot((p[0]-pts[0][0])*sc,(p[1]-pts[0][1])*sc)<14){finish();return}pts.push(p);hov=p;draw()}});
-cv.addEventListener("pointermove",e=>{const p=pos(e);if(drag){drag.b=p;draw()}else if(pts.length){hov=p;draw()}});
-cv.addEventListener("pointerup",e=>{if(!drag)return;const a=drag.a,b=drag.b;drag=null;const x1=Math.min(a[0],b[0]),x2=Math.max(a[0],b[0]),y1=Math.min(a[1],b[1]),y2=Math.max(a[1],b[1]);if(x2-x1>=10&&y2-y1>=10){cuts.push({p:[[x1,y1],[x2,y1],[x2,y2],[x1,y2]],r:1});push("c")}list()});
+let rc=null;
+const addRect=(a,b)=>{const x1=Math.min(a[0],b[0]),x2=Math.max(a[0],b[0]),y1=Math.min(a[1],b[1]),y2=Math.max(a[1],b[1]);if(x2-x1>=5&&y2-y1>=5){cuts.push({p:[[x1,y1],[x2,y1],[x2,y2],[x1,y2]],r:1});push("c");$("#shMsg").textContent="";return true}$("#shMsg").textContent="Za małe wcięcie. Narysuj prostokąt co najmniej 5×5 cm.";return false};
+cv.addEventListener("pointerdown",e=>{e.preventDefault();const p=pos(e);if(tool==="rect"){if(rc){const a=rc;rc=null;addRect(a,p);list();return}try{cv.setPointerCapture(e.pointerId)}catch(x){}drag={a:p,b:p};draw()}else{if(pts.length>=3&&Math.hypot((p[0]-pts[0][0])*sc,(p[1]-pts[0][1])*sc)<14){finish();return}pts.push(p);hov=p;draw()}});
+cv.addEventListener("pointermove",e=>{const p=pos(e);if(drag){drag.b=p;draw()}else if(rc){hov=p;draw()}else if(pts.length){hov=p;draw()}});
+const up=e=>{if(!drag)return;const a=drag.a,b=e&&e.clientX!==undefined&&e.type!=="pointercancel"?pos(e):drag.b;drag=null;if(Math.abs(a[0]-b[0])<3&&Math.abs(a[1]-b[1])<3){rc=a;hov=a;$("#shMsg").textContent="Kliknij przeciwległy narożnik wcięcia.";draw();return}addRect(a,b);list()};
+cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
 cv.addEventListener("dblclick",()=>{if(pts.length>=3)finish()});
-function setTool(t){tool=t;pts=[];drag=null;$("#shHelp").textContent=HELP[t];document.querySelectorAll("#shTools [data-t]").forEach(b=>b.classList.toggle("ghost",b.dataset.t!==t));let fb=$("#shFin");if(t==="rect"){if(fb)fb.remove()}else if(!fb){fb=document.createElement("button");fb.type="button";fb.className="btn ghost";fb.id="shFin";fb.textContent="Zakończ kształt";fb.onclick=finish;$("#shTools").append(fb)}draw()}
+function setTool(t){tool=t;pts=[];drag=null;rc=null;$("#shHelp").textContent=HELP[t];document.querySelectorAll("#shTools [data-t]").forEach(b=>b.classList.toggle("ghost",b.dataset.t!==t));let fb=$("#shFin");if(t==="rect"){if(fb)fb.remove()}else if(!fb){fb=document.createElement("button");fb.type="button";fb.className="btn ghost";fb.id="shFin";fb.textContent="Zakończ kształt";fb.onclick=finish;$("#shTools").append(fb)}draw()}
 document.querySelectorAll("#shTools [data-t]").forEach(b=>b.onclick=()=>setTool(b.dataset.t));
 $("#shUndo").onclick=()=>{if(pts.length){pts.pop();draw();return}const k=hist.pop();if(k==="c")cuts.pop();else if(k==="o")outline=null;list()};
 $("#shRot").onclick=()=>{const R=p=>[H-p[1],p[0]];cuts=cuts.map(c=>({...c,p:c.p.map(R)}));if(outline)outline=outline.map(R);const t=W;W=H;H=t;ent={L:"T",T:"R",R:"B",B:"L"}[ent];pts=[];hist=[];sync();size();list()};
