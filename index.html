@@ -273,6 +273,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <button type="button" class="btn ghost" id="shClear">Wyczyść</button><button type="button" class="btn ghost" id="shRot">Obróć o 90°</button><button type="button" class="btn ghost" id="shFlip">Zmień stronę wejścia</button></div>
 <div id="shHelp" style="font-size:.9rem;color:var(--mute);margin-bottom:8px"></div>
 <canvas id="shC" style="width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;touch-action:none;cursor:crosshair"></canvas>
+<div id="shLeg" style="font-size:.85rem;color:var(--mute);margin-top:8px"></div>
 <div id="shList" style="margin:12px 0;font-size:.95rem"></div>
 <div id="shSum" style="font-weight:600;margin-bottom:10px"></div>
 <div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn" id="shAdd">Dodaj do koszyka jako zapytanie</button><button type="button" class="btn ghost" id="shPng">Pobierz rysunek</button><button type="button" class="btn ghost" id="shCopy">Skopiuj opis</button></div>
@@ -617,14 +618,34 @@ function draw(){
  for(let y=0;y<=H;y+=10){const a=P([0,y]),b=P([W,y]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();}
  g.save();g.beginPath();[base()].concat(cuts.map(c=>c.p)).forEach(p=>{p.forEach((q,i)=>{const a=P(q);i?g.lineTo(a[0],a[1]):g.moveTo(a[0],a[1])});g.closePath()});g.clip("evenodd");
  g.fillStyle="#d4d8dc";g.fillRect(0,0,cv.width,cv.height);
- g.fillStyle="#8b9096";
- if(horiz()){for(let x=0;x<W;x+=3.2){const a=P([x+.8,0]);g.fillRect(a[0],oy-2,Math.max(1,1.4*sc),H*sc+4)}}else{for(let y=0;y<H;y+=3.2){const a=P([0,y+.8]);g.fillRect(ox-2,a[1],W*sc+4,Math.max(1,1.4*sc))}}
+ paintMat();
  g.restore();
  g.lineWidth=2;g.strokeStyle="#16191c";path(base());g.stroke();
  cuts.forEach(c=>{g.strokeStyle="#c2410c";g.lineWidth=2;path(c.p);g.stroke()});
  ruler();edgeLabels();entry();
  if(drag){const a=drag.a,b=drag.b||a;g.strokeStyle="#c2410c";g.setLineDash([6,4]);path([[a[0],a[1]],[b[0],a[1]],[b[0],b[1]],[a[0],b[1]]]);g.stroke();g.setLineDash([]);g.fillStyle="#c2410c";const w=Math.abs(b[0]-a[0]),h=Math.abs(b[1]-a[1]),q=P([Math.max(a[0],b[0]),Math.min(a[1],b[1])]);g.textAlign="left";g.fillText(fm(w)+"×"+fm(h)+" cm",q[0]+6,q[1]-6)}
  if(pts.length){g.strokeStyle="#c2410c";g.lineWidth=2;g.setLineDash([6,4]);g.beginPath();pts.forEach((q,i)=>{const a=P(q);i?g.lineTo(a[0],a[1]):g.moveTo(a[0],a[1])});if(hov){const a=P(hov);g.lineTo(a[0],a[1])}g.stroke();g.setLineDash([]);pts.forEach((q,i)=>{const a=P(q);g.fillStyle=i?"#c2410c":"#16191c";g.beginPath();g.arc(a[0],a[1],4,0,7);g.fill()})}
+}
+function paintMat(){
+ const kk=WK.find(x=>x.id===cW.value),hz=horiz(),len=hz?W:H,wid=hz?H:W,P=plan(Math.round(len*10),30),gp=gapsOf(P),seq=[{t:kk.a,c:col},{t:kk.b,c:kk.a===kk.b?col:col2}];
+ const R=(u,v,w,h,fill)=>{g.fillStyle=fill;if(hz)g.fillRect(ox+u*sc,oy+v*sc,w*sc,h*sc);else g.fillRect(ox+v*sc,oy+u*sc,h*sc,w*sc)};
+ const fine=sc>=2.2;
+ R(0,0,len,wid,"#eceff1");
+ [wid*.28,wid*.72].forEach(v=>R(0,v-.12,len,.24,"#8b9096"));
+ let u=0;
+ for(let i=0;i<P.n;i++){
+  const e=seq[i%2],c=e.c;
+  R(u,0,3,wid,"#cdd2d7");R(u,0,.07,wid,"#8f969c");R(u+.43,0,.05,wid,"#a9b0b6");R(u+2.52,0,.05,wid,"#a9b0b6");R(u+2.93,0,.07,wid,"#8f969c");
+  R(u+.48,0,2.04,wid,e.t==="s"?shade(c,-38):c);
+  if(e.t==="t"&&fine)for(let v=0;v<wid;v+=.28)R(u+.48,v,2.04,.09,shade(c,-26));
+  if(e.t==="g")for(let q=1;q<6;q++){R(u+.48+2.04*q/6-.09,0,.18,wid,shade(c,-42));R(u+.48+2.04*q/6+.09,0,.07,wid,shade(c,35))}
+  if(e.t==="s"){R(u+.48,0,.14,wid,"#141517");R(u+2.38,0,.14,wid,"#141517");if(fine)for(let v=0;v<wid;v+=.2)R(u+.66,v,1.68,.07,shade(c,12))}
+  R(u+.48,0,.2,wid,"rgba(0,0,0,.22)");R(u+2.32,0,.2,wid,"rgba(0,0,0,.22)");
+  u+=3;
+  if(i<P.n-1){const gap=gp[i]/10;R(u,0,gap,wid,"#eceff1");[wid*.28,wid*.72].forEach(v=>{R(u,v-.45,gap,.9,"#121314");R(u,v-.12,gap,.24,"#8b9096")});u+=gap}
+ }
+ if(u<len)R(u,0,len-u,wid,"#cdd2d7");
+ const L=$("#shLeg");if(L){const nm=x=>({t:"tekstylny",g:"gumowy",s:"szczotkowy"})[x];L.textContent="Ilustracja wg ustawień z konfiguratora: "+P.n+" profili aluminiowych "+cP.value+" mm, między nimi tulejki dystansowe (7–8 mm), wkład "+nm(kk.a)+(kk.a!==kk.b?" i "+nm(kk.b):"")+", kolor "+cname(col).toLowerCase()+(kk.a!==kk.b?" / "+cname(col2).toLowerCase():"")+"."}
 }
 function ruler(){
  const st=sc>=3?1:(sc>=1.2?5:10),lab=sc*10>=26?10:(sc*10>=13?20:50);
