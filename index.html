@@ -605,14 +605,14 @@ const area=p=>{let s=0;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.leng
 const base=()=>outline||[[0,0],[W,0],[W,H],[0,H]];
 const total=()=>Math.max(0,area(base())-cuts.reduce((s,c)=>s+area(c.p),0));
 let sc=1,ox=30,oy=30;
-function size(){const w=Math.min(sh.clientWidth-40,940)||600,d=Math.max(1,window.devicePixelRatio||1);const pad=34;sc=Math.min((w-pad*2)/W,(w*.62-pad*2)/H);const cw=Math.round(W*sc+pad*2),ch=Math.round(H*sc+pad*2);cv.style.width=cw+"px";cv.style.height=ch+"px";cv.width=Math.round(cw*d);cv.height=Math.round(ch*d);g.setTransform(d,0,0,d,0,0);ox=pad;oy=pad}
+function size(){const w=Math.min(sh.clientWidth-40,940)||600,d=Math.max(1,window.devicePixelRatio||1);const pad=46;sc=Math.min((w-pad*2)/W,(w*.62-pad*2)/H);const cw=Math.round(W*sc+pad*2),ch=Math.round(H*sc+pad*2);cv.style.width=cw+"px";cv.style.height=ch+"px";cv.width=Math.round(cw*d);cv.height=Math.round(ch*d);g.setTransform(d,0,0,d,0,0);ox=pad;oy=pad}
 const P=p=>[ox+p[0]*sc,oy+p[1]*sc];
 function path(p){g.beginPath();p.forEach((q,i)=>{const a=P(q);i?g.lineTo(a[0],a[1]):g.moveTo(a[0],a[1])});g.closePath()}
 function draw(){
  g.clearRect(0,0,cv.width,cv.height);
  g.strokeStyle="#e3e6e9";g.lineWidth=1;g.fillStyle="#7a828a";g.font="11px sans-serif";
- for(let x=0;x<=W;x+=10){const a=P([x,0]),b=P([x,H]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();if(x%50===0){g.textAlign="center";g.fillText(x,a[0],a[1]-8)}}
- for(let y=0;y<=H;y+=10){const a=P([0,y]),b=P([W,y]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();if(y%50===0){g.textAlign="right";g.fillText(y,a[0]-6,a[1]+4)}}
+ for(let x=0;x<=W;x+=10){const a=P([x,0]),b=P([x,H]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();}
+ for(let y=0;y<=H;y+=10){const a=P([0,y]),b=P([W,y]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.stroke();}
  g.save();g.beginPath();[base()].concat(cuts.map(c=>c.p)).forEach(p=>{p.forEach((q,i)=>{const a=P(q);i?g.lineTo(a[0],a[1]):g.moveTo(a[0],a[1])});g.closePath()});g.clip("evenodd");
  g.fillStyle="#d4d8dc";g.fillRect(0,0,cv.width,cv.height);
  const step=Math.max(2.6,W/Math.max(8,Math.round(W/3.2)));g.fillStyle="#8b9096";
@@ -620,9 +620,22 @@ function draw(){
  g.restore();
  g.lineWidth=2;g.strokeStyle="#16191c";path(base());g.stroke();
  cuts.forEach(c=>{g.strokeStyle="#c2410c";g.lineWidth=2;path(c.p);g.stroke()});
- g.fillStyle="#16191c";g.font="12px sans-serif";g.textAlign="center";const b=P([W/2,H]);g.fillText(fm(W)+" cm",b[0],b[1]+22);const r=P([0,H/2]);g.save();g.translate(r[0]-24,r[1]);g.rotate(-Math.PI/2);g.fillText(fm(H)+" cm",0,0);g.restore();
+ ruler();edgeLabels();
  if(drag){const a=drag.a,b=drag.b||a;g.strokeStyle="#c2410c";g.setLineDash([6,4]);path([[a[0],a[1]],[b[0],a[1]],[b[0],b[1]],[a[0],b[1]]]);g.stroke();g.setLineDash([]);g.fillStyle="#c2410c";const w=Math.abs(b[0]-a[0]),h=Math.abs(b[1]-a[1]),q=P([Math.max(a[0],b[0]),Math.min(a[1],b[1])]);g.textAlign="left";g.fillText(fm(w)+"×"+fm(h)+" cm",q[0]+6,q[1]-6)}
  if(pts.length){g.strokeStyle="#c2410c";g.lineWidth=2;g.setLineDash([6,4]);g.beginPath();pts.forEach((q,i)=>{const a=P(q);i?g.lineTo(a[0],a[1]):g.moveTo(a[0],a[1])});if(hov){const a=P(hov);g.lineTo(a[0],a[1])}g.stroke();g.setLineDash([]);pts.forEach((q,i)=>{const a=P(q);g.fillStyle=i?"#c2410c":"#16191c";g.beginPath();g.arc(a[0],a[1],4,0,7);g.fill()})}
+}
+function ruler(){
+ const t5=sc*5>=4,lab=sc*10>=26?10:(sc*10>=13?20:50);
+ g.strokeStyle="#16191c";g.fillStyle="#16191c";g.lineWidth=1;g.font="10px sans-serif";
+ const tick=(x1,y1,x2,y2)=>{g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke()};
+ for(let v=0;v<=W+.01;v+=5){if(!t5&&v%10)continue;const len=v%50===0?12:(v%10===0?8:4),a=P([v,0]),b=P([v,H]);tick(a[0],a[1]-2,a[0],a[1]-2-len);tick(b[0],b[1]+2,b[0],b[1]+2+len);if(v%lab===0){g.textAlign="center";g.fillText(v,a[0],a[1]-16);g.fillText(v,b[0],b[1]+24)}}
+ for(let v=0;v<=H+.01;v+=5){if(!t5&&v%10)continue;const len=v%50===0?12:(v%10===0?8:4),a=P([0,v]),b=P([W,v]);tick(a[0]-2,a[1],a[0]-2-len,a[1]);tick(b[0]+2,b[1],b[0]+2+len,b[1]);if(v%lab===0){g.textAlign="right";g.fillText(v,a[0]-16,a[1]+3);g.textAlign="left";g.fillText(v,b[0]+16,b[1]+3)}}
+ g.font="bold 11px sans-serif";g.textAlign="right";g.fillText("cm",ox+W*sc,oy-28+2);
+}
+function edgeLabels(){
+ g.font="bold 11px sans-serif";g.textAlign="center";g.textBaseline="middle";
+ const one=(p,col)=>{for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length],l=Math.hypot(b[0]-a[0],b[1]-a[1]);if(l<10||l*sc<34)continue;const m=P([(a[0]+b[0])/2,(a[1]+b[1])/2]),t=fm(Math.round(l*10)/10)+" cm";g.lineWidth=4;g.strokeStyle="#fff";g.strokeText(t,m[0],m[1]);g.fillStyle=col;g.fillText(t,m[0],m[1])}};
+ one(base(),"#16191c");cuts.forEach(c=>one(c.p,"#c2410c"));g.textBaseline="alphabetic";
 }
 function list(){
  const L=$("#shList");let h="";
