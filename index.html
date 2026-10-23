@@ -156,7 +156,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <body>
 <header>
 <b>ProfilMat</b>
-<a class="n" data-cat="sys" href="#katalog">Wycieraczki systemowe</a><a class="n" data-cat="mg" href="#maty">Maty gumowe</a><a class="n" data-cat="sys" href="#konfigurator">Konfigurator</a><a class="n" href="#kontakt">Kontakt</a>
+<a class="n" data-cat="sys" href="#katalog">Wycieraczki systemowe</a><a class="n" data-cat="mg" href="#maty">Maty gumowe</a><a class="n" data-cat="sys" href="#konfigurator">Konfigurator</a><a class="n" href="#ksztalt" id="navShape" style="color:var(--acc);font-weight:700">Własny kształt</a><a class="n" href="#kontakt">Kontakt</a>
 <button class="btn ghost" id="cartBtn">Koszyk (<span id="cnt">0</span>)</button>
 </header>
 
@@ -170,6 +170,19 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <div class="pv"><div class="ph" role="img" aria-label="Aluminiowa wycieraczka systemowa z wkładami: ryps, guma, szczotka"></div><small style="color:var(--mute)">Wizualizacja poglądowa wygenerowana przez AI.</small></div>
 </section>
 
+<section id="ksztalt" style="padding-top:8px;padding-bottom:8px"><div style="display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center;background:#16191c;color:#fff;border-radius:14px;border-left:8px solid var(--acc);padding:28px 32px" class="shb">
+<div><span style="display:inline-block;background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:.8rem;letter-spacing:.06em;padding:3px 10px;border-radius:99px">NOWOŚĆ · NA ZAMÓWIENIE</span>
+<h2 style="color:#fff;margin:12px 0 8px;background:none;box-shadow:none;padding:0;text-decoration:none">Wejście o nietypowym kształcie? Narysuj własną wycieraczkę.</h2>
+<p style="margin:0 0 14px;color:#cfd4d8">Wcięcia pod słupki, skosy, zaokrąglone narożniki albo zupełnie własny obrys. Rysujesz na planie z miarką co 1 cm, a my wykonamy wycieraczkę dokładnie według Twojego rysunku.</p>
+<ul style="margin:0 0 18px;padding-left:20px;color:#e6e9ec"><li>Rysunek z dokładnością do 1 cm</li><li>Zaznaczasz, z której strony się wchodzi</li><li>Od razu widzisz orientacyjną cenę</li></ul>
+<button type="button" class="btn" id="shBan" style="font-size:1.05rem;padding:13px 24px">Narysuj swój kształt</button></div>
+<svg viewBox="0 0 300 200" role="img" aria-label="Przykład wycieraczki z wcięciem w narożniku" style="width:100%;height:auto"><defs><pattern id="shbp" width="14" height="10" patternUnits="userSpaceOnUse"><rect width="14" height="10" fill="#dfe3e6"/><rect x="2" width="10" height="10" fill="#9a2a30"/><rect x="2" width="2" height="10" fill="#000" opacity=".25"/><rect x="10" width="2" height="10" fill="#000" opacity=".25"/></pattern></defs>
+<path d="M20 20H170V80H280V180H20Z" fill="url(#shbp)" stroke="#fff" stroke-width="2.5"/>
+<path d="M170 20H280V80H170Z" fill="none" stroke="#ff8a3d" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="225" y="54" fill="#ff8a3d" font-size="13" font-weight="700" text-anchor="middle">wcięcie</text>
+<path d="M150 200V160" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/><path d="M150 138l-11 16h22z" fill="#22c55e" transform="translate(0 4)"/>
+<text x="150" y="196" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" opacity="0"> </text></svg></div></section>
+<style>@media(max-width:760px){.shb{grid-template-columns:1fr!important;padding:20px!important}}</style>
 <section id="kategorie">
 <h2>Kategorie</h2>
 <div class="cats" style="margin-top:14px">
@@ -226,7 +239,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <label class="full">Montaż<select id="cM"><option value="0">We wpuście w posadzce</option><option value="0">Na posadzce</option></select></label>
 <label class="full" hidden>Próg najazdowy (aluminiowy)<select id="cR"><option value="2">Progi z 2 stron (wejście i wyjście)</option></select></label>
 <div class="full" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="add">Dodaj do koszyka</button><button class="btn ghost" id="quote">Poproś o wycenę</button></div>
-<div class="full" style="border:1px dashed var(--line);border-radius:8px;padding:12px 14px"><b>Niestandardowy kształt lub wcięcia?</b><br><small style="color:var(--mute)">Narysuj wycieraczkę w kreatorze: wcięcia pod słupki, narożniki, własny kształt. Cenę potwierdzimy po kontakcie.</small><br><button type="button" class="btn ghost" id="shOpen" style="margin-top:8px">Otwórz kreator kształtu</button></div>
+<div class="full" style="border:2px solid var(--acc);background:var(--g2);border-radius:8px;padding:14px 16px"><b>Niestandardowy kształt lub wcięcia?</b><br><small style="color:var(--mute)">Narysuj wycieraczkę w kreatorze: wcięcia pod słupki, narożniki, własny kształt. Cenę potwierdzimy po kontakcie.</small><br><button type="button" class="btn ghost" id="shOpen" style="margin-top:8px">Otwórz kreator kształtu</button></div>
 <div class="full"><small style="color:var(--mute)">Montaż wykonujemy na życzenie. Jeśli go potrzebujesz, skontaktuj się z nami, a ustalimy szczegóły i koszt.</small></div>
 <div class="full msg" id="msg" role="status"></div>
 </div>
@@ -710,6 +723,7 @@ $("#shAdd").onclick=()=>{const a=total()/10000,net=Math.max(.24,a)*m2(cP.value,c
 $("#shPng").onclick=()=>{cv.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="ksztalt-wycieraczki.png";a.click();setTimeout(()=>URL.revokeObjectURL(u),2000)})};
 $("#shCopy").onclick=async()=>{try{await navigator.clipboard.writeText(desc());$("#shMsg").textContent="Opis skopiowany."}catch(e){$("#shMsg").textContent=desc()}};
 })();
+$("#shBan").onclick=()=>$("#shOpen").click();
 </script>
 </body>
 </html>
