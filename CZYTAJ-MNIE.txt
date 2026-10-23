@@ -1,7 +1,7 @@
 Paczka sklepu ProfilMat na własną domenę.
 
 1. Wgraj cały folder na hosting (poza plikiem CZYTAJ-MNIE.txt).
-2. Wszędzie, gdzie jest TWOJA-DOMENA.pl, wpisz swoją prawdziwą domenę (powie Ci to firma od hostingu, albo poproś mnie, a zrobię to za Ciebie).
+2. Adres sklepu jest już wpisany we wszystkich plikach.
 3. Wejdź na Google Search Console i dodaj plik sitemap.xml.
 
 Każdy produkt ma własną stronę w folderze 'produkty'.
