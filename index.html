@@ -302,7 +302,8 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <label>Imię i nazwisko lub firma<input id="ofN" required maxlength="120" autocomplete="name" style="width:100%"></label>
 <label>E-mail<input id="ofE" type="email" required maxlength="120" autocomplete="email" style="width:100%"></label>
 <label>Telefon<input id="ofP" type="tel" maxlength="30" autocomplete="tel" style="width:100%"></label>
-<label>Adres dostawy lub uwagi<textarea id="ofM" rows="3" maxlength="1000" style="width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 10px;font:inherit;color:inherit"></textarea></label>
+<label>Adres dostawy<textarea id="ofA" rows="2" maxlength="300" autocomplete="street-address" placeholder="Ulica, numer, kod pocztowy, miejscowość" style="width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 10px;font:inherit;color:inherit"></textarea></label>
+<label>Uwagi (opcjonalnie)<textarea id="ofM" rows="3" maxlength="1000" style="width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 10px;font:inherit;color:inherit"></textarea></label>
 <input type="checkbox" id="ofB" tabindex="-1" autocomplete="off" style="display:none">
 <label style="display:flex;gap:8px;align-items:flex-start;font-size:.9rem"><input type="checkbox" id="ofC" required style="min-width:18px;margin-top:3px">Zgadzam się na przetwarzanie moich danych w celu odpowiedzi na zapytanie lub realizacji zamówienia.</label>
 <button class="btn" id="ofSend" type="submit">Wyślij</button>
@@ -748,7 +749,7 @@ $("#shBan").onclick=()=>$("#shOpen").click();
 // TU WKLEJ KLUCZ Z WEB3FORMS (darmowy). Dopóki jest "WSTAW_KLUCZ", formularz niczego nie wysyła.
 const FORM_KEY="WSTAW_KLUCZ";
 const of=$("#of"),F=$("#ofF"),R=$("#ofR");let body="",kind="";
-const open=(t,sub,txt,k)=>{$("#ofT").textContent=t;$("#ofS").textContent=sub;body=txt;kind=k;R.textContent="";$("#ofSend").disabled=false;of.hidden=false;document.body.style.overflow="hidden"};
+const open=(t,sub,txt,k)=>{$("#ofT").textContent=t;$("#ofS").textContent=sub;body=txt;kind=k;$("#ofA").required=k==="Zamówienie";R.textContent="";$("#ofSend").disabled=false;of.hidden=false;document.body.style.overflow="hidden"};
 const close=()=>{of.hidden=true;document.body.style.overflow=""};
 $("#ofX").onclick=close;of.addEventListener("click",e=>{if(e.target===of)close()});
 $("#co").onclick=()=>{const cm=$("#cm");if(!cart.length){cm.textContent="Dodaj najpierw produkt do koszyka.";return}cm.textContent="";
@@ -758,7 +759,7 @@ $("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi u
 F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked)return;
  if(FORM_KEY==="WSTAW_KLUCZ"){R.textContent="Formularz nie jest jeszcze podłączony do poczty. Napisz do nas bezpośrednio.";return}
  $("#ofSend").disabled=true;R.textContent="Wysyłanie...";
- const msg=body+"\n\nKlient: "+$("#ofN").value+"\nE-mail: "+$("#ofE").value+"\nTelefon: "+$("#ofP").value+"\nUwagi / adres: "+$("#ofM").value+"\nZgoda na przetwarzanie danych: tak";
+ const msg=body+"\n\nKlient: "+$("#ofN").value+"\nE-mail: "+$("#ofE").value+"\nTelefon: "+$("#ofP").value+"\nAdres dostawy: "+$("#ofA").value+"\nUwagi: "+$("#ofM").value+"\nZgoda na przetwarzanie danych: tak";
  try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:FORM_KEY,subject:kind+" ze sklepu ProfilMat",from_name:$("#ofN").value,email:$("#ofE").value,message:msg})});const j=await r.json();
   if(j.success){R.textContent="Dziękujemy! Wiadomość została wysłana. Odezwiemy się na podany e-mail.";if(kind==="Zamówienie"){cart.length=0;save();draw()}F.reset()}else throw 0}
  catch(x){R.textContent="Nie udało się wysłać. Spróbuj ponownie lub napisz do nas bezpośrednio.";$("#ofSend").disabled=false}};
