@@ -319,7 +319,7 @@ aside{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 .pdn-main{min-height:0}.pdn-slide .rp{background-size:cover!important}
 .pimg{background-size:cover!important;background-position:center!important;aspect-ratio:3/2;background-color:#fff}
 .hero .ph,.pv .ph{background-size:cover!important;background-position:center!important}
-</style><style id="p3d">.pdn-3d{margin-top:22px}.pdn-3d h3{font:700 1.2rem "Segoe UI",Roboto,Arial,sans-serif;margin:0 0 10px}.pdn-3b{background:radial-gradient(120% 90% at 50% 25%,#fff 0%,#eef0f2 55%,#d9dde1 100%);border-radius:14px;overflow:hidden;min-height:200px}.pdn-3d small{display:block;color:var(--mute);margin-top:8px}.pdn-3d[hidden]{display:none}</style>
+</style><style id="p3d">.pdn-3d{margin-top:22px}.pdn-3d h3{font:700 1.2rem "Segoe UI",Roboto,Arial,sans-serif;margin:0 0 10px}.pdn-3b{background:radial-gradient(120% 90% at 50% 25%,#fff 0%,#eef0f2 55%,#d9dde1 100%);border-radius:14px;overflow:hidden;min-height:200px}.pdn-3d small{display:block;color:var(--mute);margin-top:8px}.pdn-3d[hidden]{display:none}</style><style id="cth">.it{align-items:flex-start}.cth{flex:0 0 76px;width:76px;height:56px;border-radius:8px;background-size:cover;background-position:center;border:1px solid var(--line)}.it .cth.rp{aspect-ratio:auto!important;background-size:cover!important}</style>
 <style>
 html,body{overflow-x:clip;max-width:100%}
 aside{visibility:hidden}aside.open{visibility:visible}
@@ -677,10 +677,14 @@ $("#splitBtn").onclick=()=>{
 // koszyk
 let cart=[];try{cart=JSON.parse(localStorage.getItem("pm_cart")||"[]").filter(c=>!/XL 19\/50/.test(c.name))}catch(e){}
 function save(){try{localStorage.setItem("pm_cart",JSON.stringify(cart))}catch(e){}}
+const CLS={tt:"",gs:"mix",sz:"sb",gm:"gm",tg:"tg",ts:"ts"};
+function cartThumb(c){let k=null;const d=[].concat(c.dwg||[])[0];if(d&&d.k==="mat"||/^Mata gumowa/.test(c.name))return'<div class="cth" style="background-image:var(--mata);background-color:#fff"></div>';
+ if(d&&d.wn)k=WK.find(x=>x.n===d.wn);if(!k)k=WK.slice().sort((a,b)=>b.n.length-a.n.length).find(x=>c.name.indexOf(x.n)===0);
+ return k?'<div class="cth rp '+(CLS[k.id]||"")+'"></div>':""}
 function draw(){
  $("#cnt").textContent=cart.length;
  const w=$("#items");w.innerHTML=cart.length?"":"<p style='color:var(--mute)'>Koszyk jest pusty. Skonfiguruj wycieraczkę i dodaj ją tutaj.</p>";
- cart.forEach((c,i)=>{const d=document.createElement("div");d.className="it";d.innerHTML=`<span>${c.name}<br><b>${pln(c.gross)}</b>${c.dwg?`<br><a href="${dwgLink([].concat(c.dwg))}" target="_blank" rel="noopener" style="font-size:.85rem">Zobacz rysunek techniczny</a>`:""}</span><button>Usuń</button>`;d.querySelector("button").onclick=()=>{cart.splice(i,1);save();draw()};w.append(d)});
+ cart.forEach((c,i)=>{const d=document.createElement("div");d.className="it";d.innerHTML=`${cartThumb(c)}<span style="flex:1">${c.name}<br><b>${pln(c.gross)}</b>${c.dwg?`<br><a href="${dwgLink([].concat(c.dwg))}" target="_blank" rel="noopener" style="font-size:.85rem">Zobacz rysunek techniczny</a>`:""}</span><button>Usuń</button>`;d.querySelector("button").onclick=()=>{cart.splice(i,1);save();draw()};w.append(d)});
  $("#tot").textContent=pln(cart.reduce((s,c)=>s+c.gross,0));
 }
 $("#add").onclick=()=>{cart.push({...cur});save();draw();$("#msg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
@@ -758,7 +762,7 @@ function buildSys(p,w){
  const rel=WK.filter(x=>x.id!==w.id).map(x=>`<a class="pdr" data-w="${x.id}" href="#/produkt/${SLUG(p,x)}"><div class="pdrimg">${(PH(x)||"").replace(/<i>.*?<\/i>/,"")}</div><b>${x.n}</b><small>od ${pln(m2(p.id,x.id)*.24*1.23)} brutto</small></a>`).join("");
  pdSys.innerHTML=`<div class="pdn"><div class="pdn-g"><div class="pdn-gal"><div class="pdn-main"><div class="pdn-slide">${slides[0].h}</div><button type="button" class="pdn-c l" aria-label="Poprzednie zdjęcie">‹</button><button type="button" class="pdn-c r" aria-label="Następne zdjęcie">›</button><span class="pdn-n">1 / ${slides.length}</span></div><div class="pdn-th">${thumbs}</div><div class="pdn-3d"><h3>Model 3D</h3><div class="pdn-3b" id="pd3"></div><small>Przeciągnij, aby obrócić. Model zmienia się razem z Twoimi ustawieniami (rodzaj wkładu, kolory, wymiar).</small></div></div>
  <div class="pdn-panel"><small class="pdn-k">Wycieraczka systemowa · ${p.lo}</small><h1>${w.n}, ${p.n}</h1><div class="pdn-pr"><b id="pdPr"></b><small id="pdPn"></small></div><small class="pdn-note" id="pdSz"></small>
- <div class="pdn-b"><span>Profil</span><div class="pdn-row">${pill(PR,p.id)}</div></div>
+ <div class="pdn-b"><span>Profil</span><div class="pdn-row"><button type="button" class="pdp on" data-id="${p.id}" disabled style="cursor:default;opacity:1">${p.n} (${p.lo.toLowerCase().replace("profil ","")})</button></div></div>
  <div class="pdn-b"><span>Rodzaj wkładu</span><div class="pdn-row" id="pdW">${pill(WK,w.id)}</div></div>
  <div class="pdn-b"><span>Kolor wkładu${mix?" (pierwszy rodzaj)":""}</span><div class="pdn-row">${sw(PAL[w.a],st.c1,1)}</div></div>
  ${mix?`<div class="pdn-b"><span>Kolor wkładu (drugi rodzaj)</span><div class="pdn-row">${sw(PAL[w.b],st.c2,2)}</div></div>`:""}
