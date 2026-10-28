@@ -636,7 +636,7 @@ function render3d(p,w,c1,c2,L,S,seq,tgt){
  const uc=new THREE.CylinderGeometry(.09,.09,1,5);
  for(const c in br){const q=br[c],cnt=q.length/6,im=new THREE.InstancedMesh(uc,mat(c,.85,0),cnt);for(let i=0;i<cnt;i++){const h=q[6*i+3];dm.position.set(q[6*i],q[6*i+1]+h/2,q[6*i+2]);dm.rotation.set(q[6*i+4],0,q[6*i+5]);dm.scale.set(1,h,1);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)}
  if(sl.length){const us=new THREE.CylinderGeometry(.19,.19,1,12),im=new THREE.InstancedMesh(us,slv,sl.length/4);for(let i=0;i<sl.length/4;i++){dm.position.set(sl[4*i],sl[4*i+1],sl[4*i+2]);dm.rotation.set(Math.PI/2,0,0);dm.scale.set(1,sl[4*i+3]+.04,1);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)}
- const rk3=+$("#cR").value;let rE=0;
+ const rk3=tgt?(tgt._rk||0):+$("#cR").value;let rE=0;
  if(rk3&&!close){const hx=W2/2+.2,hz=Lz/2+.2,r=4,H=T,P=[],I=[],v=(x,y,z)=>{P.push(x,y,z);return P.length/3-1},q=(a,b,c,e)=>I.push(a,b,c,a,c,e),tr=(a,b,c)=>I.push(a,b,c);rE=2*r;
   if(rk3===4){const i=[v(-hx,H,-hz),v(hx,H,-hz),v(hx,H,hz),v(-hx,H,hz)],e=[v(-hx-r,0,-hz-r),v(hx+r,0,-hz-r),v(hx+r,0,hz+r),v(-hx-r,0,hz+r)];for(let k=0;k<4;k++){const n2=(k+1)%4;q(i[k],i[n2],e[n2],e[k])}}
   else{const zl=false,sides=rk3===1?[1]:[-1,1];sides.forEach(sg=>{let a,b,c,e,f,h;if(zl){a=v(sg*hx,H,-hz);b=v(sg*hx,H,hz);c=v(sg*(hx+r),0,hz);e=v(sg*(hx+r),0,-hz);f=v(sg*hx,0,-hz);h=v(sg*hx,0,hz)}else{a=v(-hx,H,sg*hz);b=v(hx,H,sg*hz);c=v(hx,0,sg*(hz+r));e=v(-hx,0,sg*(hz+r));f=v(-hx,0,sg*hz);h=v(hx,0,sg*hz)}q(a,b,c,e);tr(a,e,f);tr(b,h,c)})}
@@ -749,7 +749,7 @@ $("#pdx").onclick=()=>pdClose();
 addEventListener("popstate",()=>{if(!pd.hidden)pdClose(true)});
 const pdc=$("#pdc"),pdSys=document.createElement("div"),pdMat=document.createElement("div");pdc.append(pdSys,pdMat);
 function buildSys(p,w){
- const fc=v=>v.toFixed(1).replace(".",","),mix=w.a!==w.b,st={L:120,S:90,c1:PAL[w.a][0][1],c2:PAL[w.b][0][1],img:0};
+ const fc=v=>v.toFixed(1).replace(".",","),mix=w.a!==w.b,RL=[[0,"Bez progu"],[1,"Próg z 1 strony (wejście)"],[2,"Progi z 2 stron (wejście i wyjście)"],[4,"Próg dookoła, 4 boki"]],st={rk:0,L:120,S:90,c1:PAL[w.a][0][1],c2:PAL[w.b][0][1],img:0};
  const photo=PH(w)||`<div class="pdbox"><svg viewBox="0 0 400 240">${svg(p.id,w.id,"#26292c","#8b9096")}</svg></div>`;
  const slides=[{t:"Zdjęcie poglądowe",h:photo},{t:"Przekrój profilu",h:`<div class="pdbox"><svg viewBox="0 0 400 240">${svg(p.id,w.id,st.c1,st.c2)}</svg></div>`},{t:"Próg najazdowy",h:'<div class="rp ramp" style="aspect-ratio:5/3" role="img" aria-label="Aluminiowy próg najazdowy"><i>Zdjęcie poglądowe</i></div>'}];
  const thumbs=slides.map((s,i)=>`<button type="button" class="pdt${i?"":" on"}" data-i="${i}" aria-label="${s.t}">${i===0?(PH(w)?PH(w).replace('style="aspect-ratio:5/3"','style="aspect-ratio:1"').replace(/<i>.*?<\/i>/,""):'<div class="pdbox" style="padding:0"></div>'):i===1?'<span>Przekrój</span>':'<span>Próg</span>'}</button>`).join("");
@@ -763,6 +763,7 @@ function buildSys(p,w){
  <div class="pdn-b"><span>Kolor wkładu${mix?" (pierwszy rodzaj)":""}</span><div class="pdn-row">${sw(PAL[w.a],st.c1,1)}</div></div>
  ${mix?`<div class="pdn-b"><span>Kolor wkładu (drugi rodzaj)</span><div class="pdn-row">${sw(PAL[w.b],st.c2,2)}</div></div>`:""}
  <div class="pdn-b"><span>Wybierz wymiar (cm)</span><div class="pdn-dim"><label>Długość<input id="pdL" type="number" min="30" max="600" value="${st.L}" inputmode="numeric"></label><span>×</span><label>Szerokość<input id="pdS" type="number" min="30" max="300" value="${st.S}" inputmode="numeric"></label></div></div>
+ <div class="pdn-b"><span>Próg najazdowy <small style="font-weight:400;color:var(--mute)">(aluminiowy, ${RAMPZ} zł netto / mb)</small></span><div class="pdn-row" id="pdR">${RL.map(x=>`<button type="button" class="pdp${x[0]===0?" on":""}" data-r="${x[0]}">${x[1]}</button>`).join("")}</div></div>
  <button class="btn pdn-add" id="pdAdd" type="button">Dodaj do koszyka</button><button class="btn ghost pdn-add" id="pdCfg" type="button">Otwórz w pełnym konfiguratorze</button><small class="pdn-msg" id="pdMsg"></small>
  <div class="pdn-info"><span>✔ Cena liczona na bieżąco</span><span>✔ Produkcja na wymiar</span><span>✔ Faktura VAT na życzenie</span></div></div></div>
  <div class="pdn-acc"><details open><summary>Opis produktu</summary><p>${DESC[w.id]}</p><p>${LONG[w.id]} ${p.lo} (${p.id} mm): ${p.t.toLowerCase()}.</p></details>
@@ -770,20 +771,21 @@ function buildSys(p,w){
  <details><summary>Dostawa, zwroty i montaż</summary><p>Produkt wykonujemy na wymiar po potwierdzeniu zamówienia. Termin i koszt dostawy podamy przy potwierdzeniu. Wycieraczki na wymiar nie podlegają zwrotowi (szczegóły w regulaminie). Montaż wykonujemy na życzenie, skontaktuj się z nami.</p></details></div>
  <h2 class="pdn-h">Może Ci się spodobać</h2><div class="pdn-rel">${rel}</div></div>`;
  const $$=s=>pdSys.querySelector(s),$A=s=>pdSys.querySelectorAll(s);
- const calc=()=>{const Lin=Math.max(30,+$$("#pdL").value||0),S=Math.max(30,+$$("#pdS").value||0),pl=plan(Math.round(Lin*10),30),L=pl.L/10,a=Math.max(.24,L*S/10000),net=a*m2(p.id,w.id);return{pl,L,S,net,gross:Math.round(net*123)/100}};
- const upP=()=>{const c=calc();$$("#pdPr").textContent=pln(c.gross)+" brutto";$$("#pdPn").textContent=pln(c.net)+" netto";$$("#pdSz").textContent="Mata "+fc(c.L)+" × "+c.S+" cm, "+c.pl.n+" profili ("+(Math.max(.24,c.L*c.S/10000)).toFixed(2).replace(".",",")+" m²)"};
+ const calc=()=>{const Lin=Math.max(30,+$$("#pdL").value||0),S=Math.max(30,+$$("#pdS").value||0),pl=plan(Math.round(Lin*10),30),L=pl.L/10,a=Math.max(.24,L*S/10000),rk=st.rk,rl=rk?(rk===4?2*(L+S):rk*S)/100:0,rp=Math.round(rl*RAMPZ),net=a*m2(p.id,w.id)+rp;return{pl,L,S,net,rp,rl,gross:Math.round(net*123)/100}};
+ const upP=()=>{const c=calc();$$("#pdPr").textContent=pln(c.gross)+" brutto";$$("#pdPn").textContent=pln(c.net)+" netto";$$("#pdSz").textContent="Mata "+fc(c.L)+" × "+c.S+" cm, "+c.pl.n+" profili ("+(Math.max(.24,c.L*c.S/10000)).toFixed(2).replace(".",",")+" m²)"+(c.rp?", w tym progi "+pln(c.rp)+" netto":"")};
  const show=i=>{st.img=(i+slides.length)%slides.length;if(st.img===1)slides[1].h=`<div class="pdbox"><svg viewBox="0 0 400 240">${svg(p.id,w.id,st.c1,st.c2)}</svg></div>`;$$(".pdn-slide").innerHTML=slides[st.img].h;$$(".pdn-n").textContent=(st.img+1)+" / "+slides.length;$A(".pdt").forEach((b,k)=>b.classList.toggle("on",k===st.img))};
  $A(".pdt").forEach(b=>b.onclick=()=>show(+b.dataset.i));$$(".pdn-c.l").onclick=()=>show(st.img-1);$$(".pdn-c.r").onclick=()=>show(st.img+1);
+ $A("#pdR .pdp").forEach(b=>b.onclick=()=>{st.rk=+b.dataset.r;$A("#pdR .pdp").forEach(x=>x.classList.toggle("on",x===b));upP();r3()});
  $A(".pdn-b:nth-of-type(1) .pdp").forEach(b=>b.onclick=()=>openSys(PR.find(x=>x.id===b.dataset.id),w));
  $A("#pdW .pdp").forEach(b=>b.onclick=()=>openSys(p,WK.find(x=>x.id===b.dataset.id)));
  $A(".pds").forEach(b=>b.onclick=()=>{st[b.dataset.k==="1"?"c1":"c2"]=b.dataset.c;$A('.pds[data-k="'+b.dataset.k+'"]').forEach(x=>x.classList.toggle("on",x===b));if(st.img===1)show(1);r3()});
  $A(".pdr").forEach(a=>a.onclick=e=>{e.preventDefault();openSys(p,WK.find(x=>x.id===a.dataset.w))});
- let t3=0;const r3=()=>{clearTimeout(t3);t3=setTimeout(()=>{const c=calc();render3d(p.id,w.id,st.c1,mix?st.c2:st.c1,c.L,c.S,null,$$("#pd3"))},120)};if(!window.THREE)$$(".pdn-3d").hidden=true;
+ let t3=0;const r3=()=>{clearTimeout(t3);t3=setTimeout(()=>{const c=calc(),bx=$$("#pd3");bx._rk=st.rk;render3d(p.id,w.id,st.c1,mix?st.c2:st.c1,c.L,c.S,null,bx)},120)};if(!window.THREE)$$(".pdn-3d").hidden=true;
  ["#pdL","#pdS"].forEach(s=>$$(s).addEventListener("input",()=>{upP();r3()}));upP();r3();
  $$("#pdAdd").onclick=()=>{const c=calc(),cn=mix?`${LN[w.a]}: ${cname(st.c1).toLowerCase()}, ${LN[w.b]}: ${cname(st.c2).toLowerCase()}`:cname(st.c1);
-  cart.push({name:`${w.n}, ${p.id}, ${cn}, ${fc(c.L)}×${c.S} cm, ${c.pl.n} profili`,gross:c.gross,dwg:{k:"std",n:w.n+", profil "+p.id,W:c.L,H:c.S,S:c.S,e:"L",p:p.id,wn:w.n,c:st.c1,cn:cname(st.c1),c2:mix?st.c2:"",c2n:mix?cname(st.c2):"",np:c.pl.n,rk:0}});
+  cart.push({name:`${w.n}, ${p.id}, ${cn}, ${fc(c.L)}×${c.S} cm, ${c.pl.n} profili${st.rk?", "+RL.find(x=>x[0]===st.rk)[1].toLowerCase():""}`,gross:c.gross,dwg:{k:"std",n:w.n+", profil "+p.id,W:c.L,H:c.S,S:c.S,e:"L",p:p.id,wn:w.n,c:st.c1,cn:cname(st.c1),c2:mix?st.c2:"",c2n:mix?cname(st.c2):"",np:c.pl.n,rk:st.rk}});
   save();draw();$$("#pdMsg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
- $$("#pdCfg").onclick=()=>{pdClose();cP.value=p.id;cW.value=w.id;$("#cL").value=Math.max(30,+$$("#pdL").value||120);$("#cS").value=Math.max(30,+$$("#pdS").value||90);upd();setTimeout(()=>$("#konfigurator").scrollIntoView(),50)};
+ $$("#pdCfg").onclick=()=>{pdClose();cP.value=p.id;cW.value=w.id;$("#cR").value=st.rk;$("#cL").value=Math.max(30,+$$("#pdL").value||120);$("#cS").value=Math.max(30,+$$("#pdS").value||90);upd();setTimeout(()=>$("#konfigurator").scrollIntoView(),50)};
 }
 function openSys(p,w){
  pdMat.hidden=true;pdSys.hidden=false;
