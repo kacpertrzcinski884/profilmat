@@ -305,7 +305,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 <fieldset style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0"><legend style="padding:0 6px">Adres dostawy</legend><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
 <label style="grid-column:1/3">Ulica<input id="ofU" maxlength="100" autocomplete="address-line1" style="width:100%"></label>
 <label>Numer domu / lokalu<input id="ofH" maxlength="20" style="width:100%"></label>
-<label>Kod pocztowy<input id="ofZ" maxlength="12" autocomplete="postal-code" placeholder="00-000" style="width:100%"></label>
+<label>Kod pocztowy<input id="ofZ" maxlength="12" autocomplete="postal-code" placeholder="00-000" inputmode="text" style="width:100%"></label>
 <label>Miejscowość<input id="ofL" maxlength="80" autocomplete="address-level2" style="width:100%"></label>
 <label>Kraj<input id="ofY" maxlength="60" value="Polska" autocomplete="country-name" style="width:100%"></label></div></fieldset>
 
@@ -775,6 +775,7 @@ $("#co").onclick=()=>{const cm=$("#cm");if(!cart.length){cm.textContent="Dodaj n
 $("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi ustawieniami: "+cur.name,"ZAPYTANIE O WYCENĘ\n"+cur.name+"\nCena orientacyjna brutto: "+pln(cur.gross),"Zapytanie o wycenę")};
 F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked)return;
  if(FORM_KEY==="WSTAW_KLUCZ"){R.textContent="Formularz nie jest jeszcze podłączony do poczty. Napisz do nas bezpośrednio.";return}
+ const ac=window.__addr();if(!ac.ok){R.textContent=ac.err;return}
  const iv=window.__inv();if(!iv.ok){R.textContent=iv.err;return}
  $("#ofSend").disabled=true;R.textContent="Wysyłanie...";
  const msg=body+"\n\nKlient: "+$("#ofN").value+"\nE-mail: "+$("#ofE").value+"\nTelefon: "+$("#ofP").value+"\nAdres dostawy:\n  Ulica: "+$("#ofU").value+"\n  Numer domu / lokalu: "+$("#ofH").value+"\n  Kod pocztowy: "+$("#ofZ").value+"\n  Miejscowość: "+$("#ofL").value+"\n  Kraj: "+$("#ofY").value+"\nUwagi: "+$("#ofM").value+iv.txt+"\nZgoda na przetwarzanie danych: tak";
@@ -793,6 +794,44 @@ window.__inv=()=>{if(!q("ofInv").checked)return{ok:true,txt:"\nFaktura VAT: nie"
  return{ok:true,txt:"\nFAKTURA VAT: tak\n  Nazwa firmy: "+q("ofFN").value+"\n  NIP: "+q("ofFV").value+"\n  Adres firmy: "+a.u+" "+a.h+", "+a.z+" "+a.l+", "+a.k};
 };
 window.__invReset=()=>{tg()};
+})();
+
+(function(){
+const q=i=>document.getElementById(i),cache={};
+const isPL=c=>/^polska$|^poland$|^pl$/i.test((c||"").trim());
+function bind(zid,lid,cid){
+ const z=q(zid),l=q(lid),c=q(cid);if(!z||!l||!c)return;
+ const hint=document.createElement("small");hint.style.cssText="display:block;margin-top:3px;min-height:1.1em";z.parentNode.append(hint);
+ let auto="",timer=0,ctl=null;
+ const say=(t,ok)=>{hint.textContent=t||"";hint.style.color=ok===true?"#15803d":(ok===false?"#b42318":"var(--mute)")};
+ const apply=name=>{if(!l.value||l.value===auto){l.value=name;auto=name}};
+ const show=places=>{hint.textContent="";hint.style.color="#15803d";const lab=document.createElement("span");lab.textContent="Kod poprawny. Miejscowość: ";hint.append(lab);
+  places.forEach((n,i)=>{const b=document.createElement("button");b.type="button";b.textContent=n;b.style.cssText="margin-right:6px;border:1px solid #15803d;background:transparent;color:#15803d;border-radius:99px;padding:1px 10px;cursor:pointer;font:inherit";b.onclick=()=>{l.value=n;auto=n};hint.append(b)});
+  apply(places[0])};
+ async function look(code){
+  if(cache[code]){cache[code]===1?say("Nie znaleziono tego kodu w bazie. Sprawdź kod lub wpisz miejscowość ręcznie.",null):show(cache[code]);return}
+  if(ctl)ctl.abort();ctl=new AbortController();say("Sprawdzam kod...");
+  try{const r=await fetch("https://api.zippopotam.us/pl/"+code,{signal:ctl.signal});
+   if(r.status===404){cache[code]=1;say("Nie znaleziono tego kodu w bazie. Sprawdź kod lub wpisz miejscowość ręcznie.",null);return}
+   const j=await r.json(),pl=[...new Set((j.places||[]).map(p=>p["place name"]))];
+   if(!pl.length){cache[code]=1;say("Nie znaleziono tego kodu w bazie. Wpisz miejscowość ręcznie.",null);return}
+   cache[code]=pl;show(pl)}
+  catch(e){if(e.name!=="AbortError")say("Nie udało się sprawdzić miejscowości. Wpisz ją ręcznie.",null)}}
+ const run=()=>{clearTimeout(timer);
+  if(!isPL(c.value)){say("");return}
+  let d=z.value.replace(/\D/g,"").slice(0,5);const f=d.length>2?d.slice(0,2)+"-"+d.slice(2):d;if(z.value!==f)z.value=f;
+  if(f.length===0){say("");return}
+  if(!/^\d{2}-\d{3}$/.test(f)){say("Kod pocztowy ma format 00-000.",f.length<6?null:false);return}
+  timer=setTimeout(()=>look(f.replace("-","")),350)};
+ z.addEventListener("input",run);c.addEventListener("input",run);
+}
+bind("ofZ","ofL","ofY");
+// adres firmy (faktura): kraj z pola ofFK
+bind("ofFZ","ofFL","ofFK");
+window.__addr=()=>{
+ const chk=(zid,cid,nm)=>{const z=q(zid).value.trim(),c=q(cid).value;if(isPL(c)&&z&&!/^\d{2}-\d{3}$/.test(z))return nm+": kod pocztowy musi mieć format 00-000.";return""};
+ let e=chk("ofZ","ofY","Adres dostawy");if(!e&&q("ofInv").checked&&!q("ofSm").checked)e=chk("ofFZ","ofFK","Adres firmy");
+ return e?{ok:false,err:e}:{ok:true}};
 })();
 </script>
 </body>
