@@ -272,6 +272,44 @@ header b{transition:transform .25s}header.sc b{transform:scale(.92)}
 aside{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 #of>div,#sh>div{animation:up .4s both}
 }
+</style><style id="nike">
+.pd{background:#fff;padding:20px 16px 56px}
+.pdn-g{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:48px;align-items:start;margin-top:8px}
+.pdn-main{position:relative;background:#f4f5f6;border-radius:14px;overflow:hidden;min-height:260px;display:flex;align-items:center}
+.pdn-slide{width:100%;animation:up .35s both}.pdn-slide .rp{border-radius:0;background-color:#f4f5f6}
+.pdn-slide .pdbox{background:#f4f5f6;border-radius:0;padding:24px}
+.pdn-c{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.2);font-size:1.6rem;line-height:1;cursor:pointer;color:#111;padding:0}.pdn-c.l{left:14px}.pdn-c.r{right:14px}
+.pdn-n{position:absolute;right:14px;bottom:12px;background:rgba(255,255,255,.9);padding:3px 10px;border-radius:99px;font-size:.8rem;font-weight:600}
+.pdn-th{display:flex;gap:10px;margin-top:12px}
+.pdt{width:84px;height:84px;border-radius:10px;border:2px solid transparent;background:#f4f5f6;padding:0;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:#444}
+.pdt.on{border-color:#111}.pdt .rp{width:100%;height:100%;border-radius:0;background-size:cover}
+.pdn-panel{position:sticky;top:84px;display:flex;flex-direction:column;gap:18px}
+.pdn-k{color:var(--mute);font-weight:600;letter-spacing:.02em}
+.pdn-panel h1{font:700 clamp(1.6rem,3vw,2.3rem)/1.1 "Segoe UI",Roboto,Arial,sans-serif;letter-spacing:-.01em;margin:-8px 0 0}
+.pdn-pr b{font:700 1.7rem/1.2 "Segoe UI",Roboto,Arial,sans-serif;margin-right:10px}.pdn-pr small{color:var(--mute)}
+.pdn-note{color:var(--mute);margin-top:-10px}
+.pdn-b>span{display:block;font-weight:600;margin-bottom:8px}
+.pdn-row{display:flex;flex-wrap:wrap;gap:8px}
+.pdp{border:1.5px solid #cfd4d8;background:#fff;border-radius:10px;padding:11px 14px;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s}
+.pdp:hover{border-color:#111}.pdp.on{border-color:#111;box-shadow:0 0 0 1px #111 inset}
+.pds{width:42px;height:42px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px #cfd4d8;cursor:pointer;padding:0;transition:transform .15s}
+.pds:hover{transform:scale(1.1)}.pds.on{box-shadow:0 0 0 2.5px #111}
+.pdn-dim{display:flex;align-items:flex-end;gap:10px}.pdn-dim label{flex:1;display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--mute)}.pdn-dim input{width:100%;font-size:1rem;color:var(--ink);padding:12px;border-radius:10px;min-width:0}.pdn-dim>span{padding-bottom:12px;color:var(--mute)}
+.pdn-add{width:100%;border-radius:99px!important;padding:16px 22px!important;font-size:1.02rem}
+.pdn-msg{color:#15803d;font-weight:600;min-height:1.2em;margin-top:-8px}
+.pdn-info{display:flex;flex-direction:column;gap:4px;color:var(--mute);font-size:.9rem}
+.pdn-acc{max-width:860px;margin:48px auto 0;border-top:1px solid var(--line)}
+.pdn-acc details{border-bottom:1px solid var(--line)}
+.pdn-acc summary{list-style:none;cursor:pointer;padding:20px 0;font:700 1.15rem "Segoe UI",Roboto,Arial,sans-serif;display:flex;justify-content:space-between}
+.pdn-acc summary::after{content:"+";font-size:1.5rem;font-weight:400;line-height:1}.pdn-acc details[open] summary::after{content:"−"}
+.pdn-acc summary::-webkit-details-marker{display:none}
+.pdn-acc details>*:not(summary){color:#333;margin:0 0 16px;line-height:1.65}.pdn-acc ul{padding-left:20px}
+.pdn-h{margin:56px 0 16px;font:700 1.5rem "Segoe UI",Roboto,Arial,sans-serif;padding:0}.pdn-h::before{display:none}
+.pdn-rel{display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory}
+.pdr{flex:0 0 230px;scroll-snap-align:start;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:4px}
+.pdrimg{background:#f4f5f6;border-radius:12px;overflow:hidden;aspect-ratio:1;display:flex;align-items:center;transition:transform .25s}.pdr:hover .pdrimg{transform:scale(1.03)}
+.pdrimg .rp{width:100%;border-radius:0;background-color:#f4f5f6}.pdr small{color:var(--mute)}
+@media(max-width:860px){.pdn-g{grid-template-columns:1fr;gap:24px}.pdn-panel{position:static}.pdt{width:64px;height:64px}.pdr{flex-basis:170px}}
 </style>
 <style>
 html,body{overflow-x:clip;max-width:100%}
@@ -684,7 +722,7 @@ function mgBuild(V,W,D,ramp){
 const RP=[["Progi najazdowe na 2 dłuższych bokach",2]],RPM=30;
 const pd=$("#pd");let pdBack=false;
 let pdY=0;document.querySelector("header").after(pd);
-function pdOpen(){if(pd.hidden)pdY=scrollY;pd.hidden=false;try{history.pushState({pd:1},"");pdBack=true}catch(e){}setTimeout(()=>pd.scrollIntoView({behavior:"smooth",block:"start"}),30)}
+function pdOpen(){const was=pd.hidden;if(was)pdY=scrollY;pd.hidden=false;if(was)try{history.pushState({pd:1},"");pdBack=true}catch(e){}setTimeout(()=>pd.scrollIntoView({behavior:"smooth",block:"start"}),30)}
 function pdClose(fromPop){pd.hidden=true;seoReset();scrollTo({top:pdY,behavior:"instant"});if(pdBack&&!fromPop){pdBack=false;try{history.back()}catch(e){}}else pdBack=false}
 const T0=document.title,MD=document.querySelector('meta[name=description]'),D0=MD.content;
 const DESC={tt:"Wkład rypsowy (tekstylny) bardzo dobrze zbiera brud i wilgoć z butów. Dostępny w wielu kolorach.",gm:"Wkład gumowy jest odporny na wodę i mróz, łatwo go czyścić. Dobry na zewnątrz i do wejść z dużym ruchem.",sz:"Wkład szczotkowy zdrapuje z butów piasek i błoto. Najlepszy do miejsc, gdzie jest dużo brudu.",tg:"Połączenie rypsu i gumy: ryps zbiera wilgoć, guma zdrapuje większy brud.",ts:"Połączenie rypsu i szczotki: szczotka zdrapuje brud, ryps wycierze resztę z podeszwy.",gs:"Połączenie gumy i szczotki: odporna na pogodę i skuteczna przy dużym zabrudzeniu."};
@@ -700,11 +738,46 @@ function seoReset(){document.title=T0;MD.content=D0;const t=document.getElementB
 $("#pdx").onclick=()=>pdClose();
 addEventListener("popstate",()=>{if(!pd.hidden)pdClose(true)});
 const pdc=$("#pdc"),pdSys=document.createElement("div"),pdMat=document.createElement("div");pdc.append(pdSys,pdMat);
+function buildSys(p,w){
+ const fc=v=>v.toFixed(1).replace(".",","),mix=w.a!==w.b,st={L:120,S:90,c1:PAL[w.a][0][1],c2:PAL[w.b][0][1],img:0};
+ const photo=PH(w)||`<div class="pdbox"><svg viewBox="0 0 400 240">${svg(p.id,w.id,"#26292c","#8b9096")}</svg></div>`;
+ const slides=[{t:"Zdjęcie poglądowe",h:photo},{t:"Przekrój profilu",h:`<div class="pdbox"><svg viewBox="0 0 400 240">${svg(p.id,w.id,st.c1,st.c2)}</svg></div>`},{t:"Próg najazdowy",h:'<div class="rp ramp" style="aspect-ratio:5/3" role="img" aria-label="Aluminiowy próg najazdowy"><i>Zdjęcie poglądowe</i></div>'}];
+ const thumbs=slides.map((s,i)=>`<button type="button" class="pdt${i?"":" on"}" data-i="${i}" aria-label="${s.t}">${i===0?(PH(w)?PH(w).replace('style="aspect-ratio:5/3"','style="aspect-ratio:1"').replace(/<i>.*?<\/i>/,""):'<div class="pdbox" style="padding:0"></div>'):i===1?'<span>Przekrój</span>':'<span>Próg</span>'}</button>`).join("");
+ const pill=(items,cur,fn)=>items.map(x=>`<button type="button" class="pdp${x.id===cur?" on":""}" data-id="${x.id}">${x.n}</button>`).join("");
+ const sw=(arr,cur,k)=>arr.map(x=>`<button type="button" class="pds${x[1]===cur?" on":""}" data-k="${k}" data-c="${x[1]}" title="${x[0]}" aria-label="${x[0]}" style="background:${x[1]}"></button>`).join("");
+ const rel=WK.filter(x=>x.id!==w.id).map(x=>`<a class="pdr" data-w="${x.id}" href="#/produkt/${SLUG(p,x)}"><div class="pdrimg">${(PH(x)||"").replace(/<i>.*?<\/i>/,"")}</div><b>${x.n}</b><small>od ${pln(m2(p.id,x.id)*.24*1.23)} brutto</small></a>`).join("");
+ pdSys.innerHTML=`<div class="pdn"><div class="pdn-g"><div class="pdn-gal"><div class="pdn-main"><div class="pdn-slide">${slides[0].h}</div><button type="button" class="pdn-c l" aria-label="Poprzednie zdjęcie">‹</button><button type="button" class="pdn-c r" aria-label="Następne zdjęcie">›</button><span class="pdn-n">1 / ${slides.length}</span></div><div class="pdn-th">${thumbs}</div></div>
+ <div class="pdn-panel"><small class="pdn-k">Wycieraczka systemowa · ${p.lo}</small><h1>${w.n}, ${p.n}</h1><div class="pdn-pr"><b id="pdPr"></b><small id="pdPn"></small></div><small class="pdn-note" id="pdSz"></small>
+ <div class="pdn-b"><span>Profil</span><div class="pdn-row">${pill(PR,p.id)}</div></div>
+ <div class="pdn-b"><span>Rodzaj wkładu</span><div class="pdn-row" id="pdW">${pill(WK,w.id)}</div></div>
+ <div class="pdn-b"><span>Kolor wkładu${mix?" (pierwszy rodzaj)":""}</span><div class="pdn-row">${sw(PAL[w.a],st.c1,1)}</div></div>
+ ${mix?`<div class="pdn-b"><span>Kolor wkładu (drugi rodzaj)</span><div class="pdn-row">${sw(PAL[w.b],st.c2,2)}</div></div>`:""}
+ <div class="pdn-b"><span>Wybierz wymiar (cm)</span><div class="pdn-dim"><label>Długość<input id="pdL" type="number" min="30" max="600" value="${st.L}" inputmode="numeric"></label><span>×</span><label>Szerokość<input id="pdS" type="number" min="30" max="300" value="${st.S}" inputmode="numeric"></label></div></div>
+ <button class="btn pdn-add" id="pdAdd" type="button">Dodaj do koszyka</button><button class="btn ghost pdn-add" id="pdCfg" type="button">Konfiguruj i zobacz model 3D</button><small class="pdn-msg" id="pdMsg"></small>
+ <div class="pdn-info"><span>✔ Cena liczona na bieżąco</span><span>✔ Produkcja na wymiar</span><span>✔ Faktura VAT na życzenie</span></div></div></div>
+ <div class="pdn-acc"><details open><summary>Opis produktu</summary><p>${DESC[w.id]}</p><p>${LONG[w.id]} ${p.lo} (${p.id} mm): ${p.t.toLowerCase()}.</p></details>
+ <details><summary>Szczegóły produktu</summary><ul><li>Profil: ${p.lo} (${p.n.replace("Profil ","")})</li><li>Wkład: ${w.n}</li><li>Tulejki dystansowe między profilami zapewniają elastyczność maty</li><li>Wymiar na zamówienie, dowolna długość i szerokość</li><li>Cena za m²: ${pln(m2(p.id,w.id))} netto</li><li>Aluminiowy próg najazdowy do domówienia (${RAMPZ} zł netto / mb)</li></ul></details>
+ <details><summary>Dostawa, zwroty i montaż</summary><p>Produkt wykonujemy na wymiar po potwierdzeniu zamówienia. Termin i koszt dostawy podamy przy potwierdzeniu. Wycieraczki na wymiar nie podlegają zwrotowi (szczegóły w regulaminie). Montaż wykonujemy na życzenie, skontaktuj się z nami.</p></details></div>
+ <h2 class="pdn-h">Może Ci się spodobać</h2><div class="pdn-rel">${rel}</div></div>`;
+ const $$=s=>pdSys.querySelector(s),$A=s=>pdSys.querySelectorAll(s);
+ const calc=()=>{const Lin=Math.max(30,+$$("#pdL").value||0),S=Math.max(30,+$$("#pdS").value||0),pl=plan(Math.round(Lin*10),30),L=pl.L/10,a=Math.max(.24,L*S/10000),net=a*m2(p.id,w.id);return{pl,L,S,net,gross:Math.round(net*123)/100}};
+ const upP=()=>{const c=calc();$$("#pdPr").textContent=pln(c.gross)+" brutto";$$("#pdPn").textContent=pln(c.net)+" netto";$$("#pdSz").textContent="Mata "+fc(c.L)+" × "+c.S+" cm, "+c.pl.n+" profili ("+(Math.max(.24,c.L*c.S/10000)).toFixed(2).replace(".",",")+" m²)"};
+ const show=i=>{st.img=(i+slides.length)%slides.length;if(st.img===1)slides[1].h=`<div class="pdbox"><svg viewBox="0 0 400 240">${svg(p.id,w.id,st.c1,st.c2)}</svg></div>`;$$(".pdn-slide").innerHTML=slides[st.img].h;$$(".pdn-n").textContent=(st.img+1)+" / "+slides.length;$A(".pdt").forEach((b,k)=>b.classList.toggle("on",k===st.img))};
+ $A(".pdt").forEach(b=>b.onclick=()=>show(+b.dataset.i));$$(".pdn-c.l").onclick=()=>show(st.img-1);$$(".pdn-c.r").onclick=()=>show(st.img+1);
+ $A(".pdn-b:nth-of-type(1) .pdp").forEach(b=>b.onclick=()=>openSys(PR.find(x=>x.id===b.dataset.id),w));
+ $A("#pdW .pdp").forEach(b=>b.onclick=()=>openSys(p,WK.find(x=>x.id===b.dataset.id)));
+ $A(".pds").forEach(b=>b.onclick=()=>{st[b.dataset.k==="1"?"c1":"c2"]=b.dataset.c;$A('.pds[data-k="'+b.dataset.k+'"]').forEach(x=>x.classList.toggle("on",x===b));if(st.img===1)show(1)});
+ $A(".pdr").forEach(a=>a.onclick=e=>{e.preventDefault();openSys(p,WK.find(x=>x.id===a.dataset.w))});
+ ["#pdL","#pdS"].forEach(s=>$$(s).addEventListener("input",upP));upP();
+ $$("#pdAdd").onclick=()=>{const c=calc(),cn=mix?`${LN[w.a]}: ${cname(st.c1).toLowerCase()}, ${LN[w.b]}: ${cname(st.c2).toLowerCase()}`:cname(st.c1);
+  cart.push({name:`${w.n}, ${p.id}, ${cn}, ${fc(c.L)}×${c.S} cm, ${c.pl.n} profili`,gross:c.gross,dwg:{k:"std",n:w.n+", profil "+p.id,W:c.L,H:c.S,S:c.S,e:"L",p:p.id,wn:w.n,c:st.c1,cn:cname(st.c1),c2:mix?st.c2:"",c2n:mix?cname(st.c2):"",np:c.pl.n,rk:0}});
+  save();draw();$$("#pdMsg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
+ $$("#pdCfg").onclick=()=>{pdClose();cP.value=p.id;cW.value=w.id;$("#cL").value=Math.max(30,+$$("#pdL").value||120);$("#cS").value=Math.max(30,+$$("#pdS").value||90);upd();setTimeout(()=>$("#konfigurator").scrollIntoView(),50)};
+}
 function openSys(p,w){
  pdMat.hidden=true;pdSys.hidden=false;
  const vis=PH(w)||`<div class="pdbox"><svg viewBox="0 0 400 240">${svg(p.id,w.id,"#26292c","#8b9096")}</svg></div>`;
- pdSys.innerHTML=`<div class="pdg"><div>${vis}</div><div class="col"><h1>${w.n}, ${p.lo}</h1><p style="margin:0;color:var(--mute)">${p.t}</p><p style="margin:0">${DESC[w.id]}</p><p style="margin:0;color:var(--mute)">${LONG[w.id]} ${p.lo} (${p.id} mm): ${p.t.toLowerCase()}.</p><span class="pf" style="font-size:1.05rem">Mata 40×60 cm już od <b>${pln(m2(p.id,w.id)*.24)}</b> <small>netto (${pln(m2(p.id,w.id)*.24*1.23)} brutto)</small></span><small style="color:var(--mute)">Cena zależy od wymiaru. Dokładną kwotę policzysz od razu w konfiguratorze.</small><table><tr><td>Profil</td><td>${p.lo} (${p.n.replace("Profil ","")})</td></tr><tr><td>Wkład</td><td>${w.n}</td></tr><tr><td>Tulejki dystansowe</td><td>Między profilami, zapewniają elastyczność maty</td></tr><tr><td>Wymiar</td><td>Na wymiar, dowolna długość i szerokość</td></tr><tr><td>Cena za m²</td><td>${pln(m2(p.id,w.id))} netto</td></tr><tr><td>Kolory wkładów</td><td>Do wyboru w konfiguratorze</td></tr><tr><td>Próg najazdowy</td><td>Aluminiowy, do domówienia w konfiguratorze (${RAMPZ} zł netto / mb)</td></tr></table><button class="btn" id="pdCfg">Konfiguruj i zobacz model 3D</button></div></div>`;
- $("#pdCfg").onclick=()=>{pdClose();cP.value=p.id;cW.value=w.id;upd();setTimeout(()=>$("#konfigurator").scrollIntoView(),50)};
+ buildSys(p,w);
  const net=m2(p.id,w.id)*.24,slug=SLUG(p,w),FN=(/^Mix/.test(w.n)?"Wycieraczka systemowa "+w.n.toLowerCase():w.n.replace(/y$/,"a")+" wycieraczka systemowa"),ttl=FN+", "+p.lo.toLowerCase()+" "+p.id+" mm";
  pdOpen();
  seo(ttl,FN+" na wymiar, aluminiowa, "+p.lo.toLowerCase()+" ("+p.id+" mm). "+DESC[w.id]+" Mata 40×60 cm od "+pln(net*1.23)+" brutto.",slug,{"@context":"https://schema.org","@type":"Product",name:FN+", "+p.lo.toLowerCase(),description:DESC[w.id]+" "+p.t+".",brand:{"@type":"Brand",name:"ProfilMat"},offers:{"@type":"Offer",priceCurrency:"PLN",price:(net*1.23).toFixed(2),availability:"https://schema.org/InStock",itemCondition:"https://schema.org/NewCondition"}});
