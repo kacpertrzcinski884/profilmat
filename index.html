@@ -155,7 +155,7 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 </head>
 <body>
 <header>
-<b>ProfilMat</b>
+<b id="logo" role="link" tabindex="0" title="Strona główna" style="cursor:pointer">ProfilMat</b>
 <a class="n" data-cat="sys" href="#katalog">Wycieraczki systemowe</a><a class="n" data-cat="mg" href="#maty">Maty gumowe</a><a class="n" data-cat="sys" href="#konfigurator">Konfigurator</a><a class="n" href="#ksztalt" id="navShape" style="color:var(--acc);font-weight:700">Własny kształt</a><a class="n" href="#kontakt">Kontakt</a>
 <button class="btn ghost" id="cartBtn">Koszyk (<span id="cnt">0</span>)</button>
 </header>
@@ -736,6 +736,7 @@ function seo(title,desc,slug,ld){
 }
 function seoReset(){document.title=T0;MD.content=D0;const t=document.getElementById("ldp");if(t)t.remove();try{history.replaceState(history.state,"",location.pathname+location.search)}catch(e){}}
 $("#pdx").onclick=()=>pdClose();
+{const go=()=>{if(!pd.hidden)pdClose();$("#cart").classList.remove("open");setTimeout(()=>scrollTo({top:0,behavior:"smooth"}),30)};const lg=$("#logo");lg.onclick=go;lg.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}}
 addEventListener("popstate",()=>{if(!pd.hidden)pdClose(true)});
 const pdc=$("#pdc"),pdSys=document.createElement("div"),pdMat=document.createElement("div");pdc.append(pdSys,pdMat);
 function buildSys(p,w){
