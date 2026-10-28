@@ -238,9 +238,43 @@ header button:hover{background:rgba(255,255,255,.18)!important}
 .tile{border-radius:14px;box-shadow:var(--sh1)}.tile:hover{box-shadow:var(--sh2)}
 .hero::before,.hero::after{display:none}
 .cfg .pv,.pdg .pv{box-shadow:var(--sh1);border:1px solid rgba(16,19,21,.06);background:#fff}
+</style><style id="motion">
+@media (prefers-reduced-motion:no-preference){
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes inr{from{opacity:0;transform:translateX(40px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes flt{0%,100%{translate:0 0}50%{translate:0 -12px}}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,40px) scale(1.2)}}
+@keyframes shine{0%,70%{transform:translateX(-130%) skewX(-20deg)}100%{transform:translateX(230%) skewX(-20deg)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,138,61,.5)}100%{box-shadow:0 0 0 14px rgba(255,138,61,0)}}
+.hero>div:first-child>*{animation:up .8s cubic-bezier(.2,.7,.2,1) both}
+.hero>div:first-child>:nth-child(2){animation-delay:.12s}.hero>div:first-child>:nth-child(3){animation-delay:.24s}.hero>div:first-child>:nth-child(4){animation-delay:.36s}
+.hero>.pv,.hero>div+div,.hero>div:last-child{animation:inr 1s .25s cubic-bezier(.2,.7,.2,1) both}
+.hero .pv{animation:inr 1s .25s cubic-bezier(.2,.7,.2,1) both,flt 6s 1.3s ease-in-out infinite;will-change:transform;transform:translate3d(var(--px,0px),var(--py,0px),0)}
+.hero::before,.hero::after{display:block;content:"";position:absolute;border-radius:50%;z-index:-1;filter:blur(40px);animation:drift 11s ease-in-out infinite alternate}
+.hero::before{width:480px;height:480px;right:6%;top:-80px;background:radial-gradient(circle,rgba(255,138,61,.45),transparent 68%)}
+.hero::after{width:420px;height:420px;left:22%;bottom:-140px;background:radial-gradient(circle,rgba(120,140,160,.35),transparent 70%);animation-delay:-5s}
+.btn{position:relative;overflow:hidden}
+.hero .btn:not(.ghost)::after,#shOpen::after,#add::after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:shine 3.8s ease-in-out infinite;pointer-events:none}
+#cnt{display:inline-block}
+.chips span{transition:transform .2s}.chips span:hover{transform:translateY(-3px) scale(1.06)}
+section.rv h2::before{width:0;transition:width .9s .25s cubic-bezier(.2,.7,.2,1)}section.rv.in h2::before{width:44px}
+.rv .cat,.rv .tile,.rv .sum,.rv .cfg>*{opacity:0;transform:translateY(26px);transition:opacity .7s var(--d,0s),transform .7s var(--d,0s) cubic-bezier(.2,.7,.2,1),box-shadow .25s}
+.rv.in .cat,.rv.in .tile,.rv.in .sum,.rv.in .cfg>*{opacity:1;transform:none}
+.rv.in .cat:hover,.rv.in .tile:hover{transform:translateY(-5px)}
+.tile:hover{transform:translateY(-4px) scale(1.04)}
+.card .pimg,.card svg{transition:transform .5s}.card:hover .pimg,.card:hover svg{transform:scale(1.05)}
+.card{overflow:hidden}
+.sw button[aria-pressed="true"]{animation:pulse 1.8s ease-out infinite}
+.tabs button.on{transition:transform .2s}
+#sprog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#ff8a3d,#ffd1a8);z-index:50;box-shadow:0 0 10px rgba(255,138,61,.8)}
+header{transition:padding .25s,box-shadow .25s}header.sc{padding-top:6px;padding-bottom:6px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+header b{transition:transform .25s}header.sc b{transform:scale(.92)}
+aside{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+#of>div,#sh>div{animation:up .4s both}
+}
 </style>
 <style>
-html,body{overflow-x:hidden;max-width:100%}
+html,body{overflow-x:clip;max-width:100%}
 aside{visibility:hidden}aside.open{visibility:visible}
 @media(max-width:800px){
 body{font-size:16px}
@@ -914,5 +948,16 @@ window.__addr=()=>{
  return e?{ok:false,err:e}:{ok:true}};
 })();
 </script>
-</body>
+<script>
+(function(){
+if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+var bar=document.createElement("div");bar.id="sprog";document.body.appendChild(bar);var h=document.querySelector("header");
+function sc(){var y=scrollY,m=document.documentElement.scrollHeight-innerHeight;bar.style.width=(m>0?y/m*100:0)+"%";if(h)h.classList.toggle("sc",y>30)}
+addEventListener("scroll",sc,{passive:true});sc();
+document.querySelectorAll(".rv").forEach(function(s){s.querySelectorAll(".cat,.tile,.cfg>*").forEach(function(e,i){e.style.setProperty("--d",(i*.09)+"s")})});
+var pv=document.querySelector(".hero .pv");
+if(pv&&matchMedia("(hover:hover)").matches){var hero=document.querySelector(".hero");hero.addEventListener("mousemove",function(e){var r=hero.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;pv.style.setProperty("--px",(x*-22)+"px");pv.style.setProperty("--py",(y*-16)+"px")});hero.addEventListener("mouseleave",function(){pv.style.setProperty("--px","0px");pv.style.setProperty("--py","0px")})}
+var cnt=document.getElementById("cnt");if(cnt&&window.MutationObserver){new MutationObserver(function(){cnt.animate([{transform:"scale(1)"},{transform:"scale(1.5)"},{transform:"scale(1)"}],{duration:350})}).observe(cnt,{childList:true,characterData:true,subtree:true})}
+})();
+</script></body>
 </html>
