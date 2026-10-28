@@ -486,6 +486,8 @@ function render3d(p,w,c1,c2,L,S,seq){
  const D=close?(Math.max(Lz,Sc)+rE)*1.25+5:(Math.hypot(Lz,Sc)+rE)*1.4+5;cam.position.set(0,D*.5,D*.8);cam.lookAt(0,0,0);r.render(sc,cam);
 }
 $("#m3").onclick=()=>{M3=M3==="close"?"full":"close";$("#m3").textContent=M3==="close"?"Pokaż całą wycieraczkę":"Pokaż zbliżenie fragmentu";upd()};
+const DWG_BASE="https://kacpertrzcinski884.github.io/profilmat/rysunek.html";
+function dwgLink(list){try{const j=JSON.stringify(list.filter(Boolean)),b=btoa(unescape(encodeURIComponent(j))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");return list.filter(Boolean).length?DWG_BASE+"#d="+b:""}catch(e){return""}}
 const RAMPZ=68;
 let cur={};
 function upd(){
@@ -496,19 +498,19 @@ function upd(){
  $("#sArea").textContent=a.toFixed(2).replace(".",",")+" m²";$("#sPr").textContent=pl.n+" szt.";$("#sSp").textContent=pl.n>1?(pl.n-1)+" szt.":"brak";$("#sLen").textContent=fc(L)+" cm (swobodnie "+fc((pl.L+pl.n-1)/10)+" cm)";$("#sNote").textContent=(pl.L!==Math.round(Lin*10)?"Długość dopasowano do najbliższej możliwej: "+fc(L)+" cm.":"Tulejki dystansowe między profilami są ściśnięte, co zapewnia elastyczność maty.");$("#sM2").textContent=pln(pr);$("#sNet").textContent=pln(net);$("#sGross").textContent=pln(net*1.23);
  $("#cfgSvg").innerHTML=svg(cP.value,cW.value,col,col2);$("#cfgSec").innerHTML=strips(cP.value,cW.value,col,400,240,col2).match(/<defs>.*?<\/defs>/)[0]+section(cP.value,cW.value,col,col2);render3d(cP.value,cW.value,col,mix?col2:col,L,S);
  const cn=mix?`${LN[kk.a]}: ${cname(col).toLowerCase()}, ${LN[kk.b]}: ${cname(col2).toLowerCase()}`:cname(col);
- cur={name:`${kk.n}, ${cP.value}, ${cn}, ${fc(L)}×${S} cm, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}`,gross:Math.round(net*123)/100};
+ cur={name:`${kk.n}, ${cP.value}, ${cn}, ${fc(L)}×${S} cm, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}`,gross:Math.round(net*123)/100,dwg:{k:"std",n:kk.n+", profil "+cP.value,W:L,H:S,S,e:"L",p:cP.value,wn:kk.n,c:col,cn:cname(col),c2:mix?col2:"",c2n:mix?cname(col2):"",np:pl.n,rk}};
 }
 $("#splitBtn").onclick=()=>{
  const h=$("#splitHint"),box=$("#splitParts"),big=+$("#cL").value>=300,L0=+$("#cL").value||0,S0=+$("#cS").value||0;
  const P=big?[[Math.ceil(L0/2),S0],[Math.floor(L0/2),S0]]:[[L0,Math.ceil(S0/2)],[L0,Math.floor(S0/2)]];
  box.style.display="block";box.hidden=false;
  box.innerHTML='<p style="margin:0 0 8px">Ustaw wymiar każdej części osobno. Pozostałe ustawienia (profil, wkład, kolor) są takie same jak wyżej.</p>'+P.map((p,i)=>`<div class="sp" data-i="${i}" style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px"><b style="flex:0 0 100%">Część ${i+1}</b><label style="flex:1;min-width:110px">Długość (cm)<input type="number" min="30" max="600" value="${p[0]}" class="spL"></label><label style="flex:1;min-width:110px">Szerokość (cm)<input type="number" min="30" max="300" value="${p[1]}" class="spS"></label><span class="spP" style="flex:0 0 100%;font-weight:600"></span><button type="button" class="btn ghost spA">Dodaj część ${i+1} do koszyka</button></div>`).join("")+'<button type="button" class="btn" id="spAll">Dodaj do koszyka jako jeden produkt (z podziałem na 2 części)</button>';
- const calc=i=>{const r=box.querySelector('.sp[data-i="'+i+'"]'),oL=$("#cL").value,oS=$("#cS").value;let res;try{$("#cL").value=r.querySelector(".spL").value;$("#cS").value=r.querySelector(".spS").value;upd();res={...cur,name:cur.name+" (część "+(i+1)+" z 2)"}}finally{$("#cL").value=oL;$("#cS").value=oS;upd()}return res};
+ const calc=i=>{const r=box.querySelector('.sp[data-i="'+i+'"]'),oL=$("#cL").value,oS=$("#cS").value;let res;try{$("#cL").value=r.querySelector(".spL").value;$("#cS").value=r.querySelector(".spS").value;upd();res={...cur,name:cur.name+" (część "+(i+1)+" z 2)",dwg:{...cur.dwg,n:cur.dwg.n+" (część "+(i+1)+" z 2)"}}}finally{$("#cL").value=oL;$("#cS").value=oS;upd()}return res};
  const show=()=>{[0,1].forEach(i=>{const c=calc(i);box.querySelector('.sp[data-i="'+i+'"] .spP').textContent=pln(c.gross/1.23)+" netto ("+pln(c.gross)+" brutto)"})};
  box.oninput=show;show();
  const add=l=>{l.forEach(i=>cart.push(calc(i)));save();draw();$("#msg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
  box.querySelectorAll(".spA").forEach((b,i)=>b.onclick=()=>add([i]));$("#spAll").onclick=()=>{const c0=calc(0),c1=calc(1),d=c1.name.match(/([\d,]+×\d+) cm, (\d+) profili/);
-  cart.push({name:c0.name.replace(/ \(część 1 z 2\)$/,"").replace(/([\d,]+×\d+) cm, (\d+) profili/,(m,x,y)=>"podział na 2 części: część 1 "+x+" cm ("+y+" profili) + część 2 "+d[1]+" cm ("+d[2]+" profili)"),gross:Math.round((c0.gross+c1.gross)*100)/100});
+  cart.push({name:c0.name.replace(/ \(część 1 z 2\)$/,"").replace(/([\d,]+×\d+) cm, (\d+) profili/,(m,x,y)=>"podział na 2 części: część 1 "+x+" cm ("+y+" profili) + część 2 "+d[1]+" cm ("+d[2]+" profili)"),gross:Math.round((c0.gross+c1.gross)*100)/100,dwg:[c0.dwg,c1.dwg]});
   save();draw();$("#msg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
  $("#splitBtn").hidden=true;
 };
@@ -519,7 +521,7 @@ function save(){try{localStorage.setItem("pm_cart",JSON.stringify(cart))}catch(e
 function draw(){
  $("#cnt").textContent=cart.length;
  const w=$("#items");w.innerHTML=cart.length?"":"<p style='color:var(--mute)'>Koszyk jest pusty. Skonfiguruj wycieraczkę i dodaj ją tutaj.</p>";
- cart.forEach((c,i)=>{const d=document.createElement("div");d.className="it";d.innerHTML=`<span>${c.name}<br><b>${pln(c.gross)}</b></span><button>Usuń</button>`;d.querySelector("button").onclick=()=>{cart.splice(i,1);save();draw()};w.append(d)});
+ cart.forEach((c,i)=>{const d=document.createElement("div");d.className="it";d.innerHTML=`<span>${c.name}<br><b>${pln(c.gross)}</b>${c.dwg?`<br><a href="${dwgLink([].concat(c.dwg))}" target="_blank" rel="noopener" style="font-size:.85rem">Zobacz rysunek techniczny</a>`:""}</span><button>Usuń</button>`;d.querySelector("button").onclick=()=>{cart.splice(i,1);save();draw()};w.append(d)});
  $("#tot").textContent=pln(cart.reduce((s,c)=>s+c.gross,0));
 }
 $("#add").onclick=()=>{cart.push({...cur});save();draw();$("#msg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
@@ -610,7 +612,7 @@ function openMat(m){
    img.hidden=on3;box.hidden=!on3;
    if(on3){if(!mgV)mgV=mkView(box);mgV.fit();const c=calc();mgBuild(mgV,c.W,c.D,c.k)}
   });
-  pdMat.querySelector(".add").onclick=()=>{const c=calc();cart.push({name:m.n+", "+c.x[0]+(c.k?", "+RP.find(z=>z[1]===c.k)[0].toLowerCase():""),gross:Math.round(c.net*123)/100});save();draw();$("#cart").classList.add("open")};
+  pdMat.querySelector(".add").onclick=()=>{const c=calc();cart.push({name:m.n+", "+c.x[0]+(c.k?", "+RP.find(z=>z[1]===c.k)[0].toLowerCase():""),gross:Math.round(c.net*123)/100,dwg:{k:"mat",n:m.n+", "+c.x[0],W:c.W,H:c.D,rk:c.k}});save();draw();$("#cart").classList.add("open")};
  }
  pdOpen();
  seo("Mata gumowa z otworami, czarna mata wejściowa","Czarna mata gumowa z otworami i fazowaną krawędzią, do wejść, kuchni i warsztatów. Trzy rozmiary, opcjonalne progi najazdowe. Od "+pln(m.s[0][1]*1.23)+" brutto.","mata-gumowa-z-otworami",{"@context":"https://schema.org","@type":"Product",name:m.n,description:m.d,brand:{"@type":"Brand",name:"ProfilMat"},offers:{"@type":"Offer",priceCurrency:"PLN",price:(m.s[0][1]*1.23).toFixed(2),availability:"https://schema.org/InStock",itemCondition:"https://schema.org/NewCondition"}});
@@ -756,7 +758,7 @@ $("#shW").onchange=$("#shH").onchange=dims;
 $("#shOpen").onclick=()=>{ent="L";W=cl(+$("#cL").value||120,30,600);H=cl(+$("#cS").value||90,30,300);sync();cuts=[];outline=null;pts=[];hist=[];sh.hidden=false;document.body.style.overflow="hidden";sh.scrollTop=0;size();setTool("rect");list();$("#shMsg").textContent=""};
 $("#shX").onclick=()=>{sh.hidden=true;document.body.style.overflow=""};
 addEventListener("resize",()=>{if(!sh.hidden){size();draw()}});
-$("#shAdd").onclick=()=>{const a=total()/10000,net=Math.max(.24,a)*m2(cP.value,cW.value);cart.push({name:"NIESTANDARDOWY KSZTAŁT (wycena po kontakcie). "+desc(),gross:Math.round(net*123)/100});save();window.__cartDraw();$("#shMsg").textContent="Dodano do koszyka jako zapytanie. Cenę potwierdzimy po kontakcie.";$("#cart").classList.add("open")};
+$("#shAdd").onclick=()=>{const a=total()/10000,net=Math.max(.24,a)*m2(cP.value,cW.value);cart.push({name:"NIESTANDARDOWY KSZTAŁT (wycena po kontakcie). "+desc(),gross:Math.round(net*123)/100,dwg:(()=>{const kk=WK.find(x=>x.id===cW.value);return{k:"shape",n:"Niestandardowy kształt: "+kk.n+", profil "+cP.value,W,H,e:ent,o:outline,cuts:cuts.map(c=>c.p),S:1,p:cP.value,wn:kk.n,c:col,cn:cname(col)}})()});save();window.__cartDraw();$("#shMsg").textContent="Dodano do koszyka jako zapytanie. Cenę potwierdzimy po kontakcie.";$("#cart").classList.add("open")};
 $("#shPng").onclick=()=>{cv.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="ksztalt-wycieraczki.png";a.click();setTimeout(()=>URL.revokeObjectURL(u),2000)})};
 $("#shCopy").onclick=async()=>{try{await navigator.clipboard.writeText(desc());$("#shMsg").textContent="Opis skopiowany."}catch(e){$("#shMsg").textContent=desc()}};
 })();
@@ -766,13 +768,13 @@ $("#shBan").onclick=()=>$("#shOpen").click();
 // TU WKLEJ KLUCZ Z WEB3FORMS (darmowy). Dopóki jest "WSTAW_KLUCZ", formularz niczego nie wysyła.
 const FORM_KEY="fbd74d6b-ea69-4c47-8cbc-36e92e44f1d1";
 const of=$("#of"),F=$("#ofF"),R=$("#ofR");let body="",kind="";
-const open=(t,sub,txt,k)=>{$("#ofT").textContent=t;$("#ofS").textContent=sub;body=txt;kind=k;["ofU","ofH","ofZ","ofL","ofY"].forEach(i=>$("#"+i).required=k==="Zamówienie");R.textContent="";$("#ofSend").disabled=false;of.hidden=false;document.body.style.overflow="hidden"};
+const open=(t,sub,txt,k,dl)=>{$("#ofT").textContent=t;$("#ofS").textContent=sub;if(dl)txt+="\n\nRYSUNKI TECHNICZNE (wymiary całej wycieraczki i wcięć):\n"+dl;let da=$("#ofDw");if(!da){da=document.createElement("a");da.id="ofDw";da.target="_blank";da.rel="noopener";da.style.cssText="display:block;margin:6px 0 10px;font-weight:600";$("#ofS").after(da)}da.hidden=!dl;if(dl){da.href=dl;da.textContent="Zobacz rysunek techniczny, który dołączymy do zamówienia"}body=txt;kind=k;["ofU","ofH","ofZ","ofL","ofY"].forEach(i=>$("#"+i).required=k==="Zamówienie");R.textContent="";$("#ofSend").disabled=false;of.hidden=false;document.body.style.overflow="hidden"};
 const close=()=>{of.hidden=true;document.body.style.overflow=""};
 $("#ofX").onclick=close;of.addEventListener("click",e=>{if(e.target===of)close()});
 $("#co").onclick=()=>{const cm=$("#cm");if(!cart.length){cm.textContent="Dodaj najpierw produkt do koszyka.";return}cm.textContent="";
  const lines=cart.map((c,i)=>(i+1)+". "+c.name+" - "+pln(c.gross)+" brutto").join("\n"),sum=cart.reduce((s,c)=>s+c.gross,0);
- open("Wyślij zamówienie","Razem "+pln(sum)+" brutto. Skontaktujemy się, żeby potwierdzić wycenę, termin i płatność.","ZAMÓWIENIE ZE SKLEPU\n"+lines+"\nRazem brutto: "+pln(sum),"Zamówienie")};
-$("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi ustawieniami: "+cur.name,"ZAPYTANIE O WYCENĘ\n"+cur.name+"\nCena orientacyjna brutto: "+pln(cur.gross),"Zapytanie o wycenę")};
+ open("Wyślij zamówienie","Razem "+pln(sum)+" brutto. Skontaktujemy się, żeby potwierdzić wycenę, termin i płatność.","ZAMÓWIENIE ZE SKLEPU\n"+lines+"\nRazem brutto: "+pln(sum),"Zamówienie",dwgLink(cart.flatMap(c=>c.dwg?[].concat(c.dwg):[])))};
+$("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi ustawieniami: "+cur.name,"ZAPYTANIE O WYCENĘ\n"+cur.name+"\nCena orientacyjna brutto: "+pln(cur.gross),"Zapytanie o wycenę",dwgLink([].concat(cur.dwg||[])))};
 F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked)return;
  if(FORM_KEY==="WSTAW_KLUCZ"){R.textContent="Formularz nie jest jeszcze podłączony do poczty. Napisz do nas bezpośrednio.";return}
  const ac=window.__addr();if(!ac.ok){R.textContent=ac.err;return}
