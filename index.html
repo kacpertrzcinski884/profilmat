@@ -319,7 +319,7 @@ aside{transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 .pdn-main{min-height:0}.pdn-slide .rp{background-size:cover!important}
 .pimg{background-size:cover!important;background-position:center!important;aspect-ratio:3/2;background-color:#fff}
 .hero .ph,.pv .ph{background-size:cover!important;background-position:center!important}
-</style>
+</style><style id="p3d">.pdn-3d{margin-top:22px}.pdn-3d h3{font:700 1.2rem "Segoe UI",Roboto,Arial,sans-serif;margin:0 0 10px}.pdn-3b{background:radial-gradient(120% 90% at 50% 25%,#fff 0%,#eef0f2 55%,#d9dde1 100%);border-radius:14px;overflow:hidden;min-height:200px}.pdn-3d small{display:block;color:var(--mute);margin-top:8px}.pdn-3d[hidden]{display:none}</style>
 <style>
 html,body{overflow-x:clip;max-width:100%}
 aside{visibility:hidden}aside.open{visibility:visible}
@@ -587,20 +587,20 @@ function plan(L,w){
 }
 function gapsOf(P){const m=P.n-1,a=[];for(let i=0;i<m;i++)a.push(7+(Math.floor((i+1)*P.k9/m)>Math.floor(i*P.k9/m)?1:0));return a}
 let M3="full";
-function render3d(p,w,c1,c2,L,S,seq){
- const box=$("#d3");if(!box||!window.THREE)return;
- if(!R3){const W=box.clientWidth||400,H=Math.round(W*.68),r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,2));r.setSize(W,H);
+function render3d(p,w,c1,c2,L,S,seq,tgt){
+ const box=tgt||$("#d3");if(!box||!window.THREE)return;let RS=tgt?tgt._r3:R3;
+ if(!RS){const W=box.clientWidth||400,H=Math.round(W*.68),r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,2));r.setSize(W,H);
   const el=r.domElement;el.style.cssText="width:100%;height:auto;display:block;touch-action:none;cursor:grab";box.append(el);
   const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(35,W/H,1,5000),g=new THREE.Group();sc.add(g);
   sc.add(new THREE.AmbientLight(0xffffff,.55));const d=new THREE.DirectionalLight(0xffffff,.7);d.position.set(1,2,1.5);sc.add(d);const d2=new THREE.DirectionalLight(0xffffff,.35);d2.position.set(-2,1,-1);sc.add(d2);
-  g.rotation.y=-1.1;R3={r,sc,cam,g};
+  g.rotation.y=-1.1;RS=tgt?(tgt._r3={r,sc,cam,g}):(R3={r,sc,cam,g});
   const fit=()=>{const w=box.clientWidth;if(!w)return;const h=Math.round(w*.68);r.setPixelRatio(Math.min(3,Math.max(2,window.devicePixelRatio||1)));r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();r.render(sc,cam)};
-  R3.fit=fit;if(window.ResizeObserver)new ResizeObserver(fit).observe(box);else fit();
+  RS.fit=fit;if(window.ResizeObserver)new ResizeObserver(fit).observe(box);else fit();
   let dn=0,px=0,py=0;
   el.onpointerdown=e=>{dn=1;px=e.clientX;py=e.clientY;el.setPointerCapture(e.pointerId)};
   el.onpointermove=e=>{if(!dn)return;g.rotation.y+=(e.clientX-px)*.01;g.rotation.x=Math.max(-.35,Math.min(.6,g.rotation.x+(e.clientY-py)*.006));px=e.clientX;py=e.clientY;r.render(sc,cam)};
   el.onpointerup=el.onpointercancel=()=>dn=0}
- const {r,sc,cam,g}=R3,close=M3==="close";
+ const {r,sc,cam,g}=RS,close=!tgt&&M3==="close";
  while(g.children.length){const o=g.children[0];g.remove(o);o.geometry&&o.geometry.dispose();o.dispose&&o.dispose()}
  const k=WK.find(x=>x.id===w);seq=seq||[{t:k.a,c:c1},{t:k.b,c:c2}];
  const wd=3,gp=.5,pitch=wd+gp,hh=p==="12/30"?1.2:1.9,fo=.1,B=fo,T=B+hh,f=.45,sw=wd-2*f,isw=sw-.12,tw=.17,ft=.11,cavh=hh-.89;
@@ -756,14 +756,14 @@ function buildSys(p,w){
  const pill=(items,cur,fn)=>items.map(x=>`<button type="button" class="pdp${x.id===cur?" on":""}" data-id="${x.id}">${x.n}</button>`).join("");
  const sw=(arr,cur,k)=>arr.map(x=>`<button type="button" class="pds${x[1]===cur?" on":""}" data-k="${k}" data-c="${x[1]}" title="${x[0]}" aria-label="${x[0]}" style="background:${x[1]}"></button>`).join("");
  const rel=WK.filter(x=>x.id!==w.id).map(x=>`<a class="pdr" data-w="${x.id}" href="#/produkt/${SLUG(p,x)}"><div class="pdrimg">${(PH(x)||"").replace(/<i>.*?<\/i>/,"")}</div><b>${x.n}</b><small>od ${pln(m2(p.id,x.id)*.24*1.23)} brutto</small></a>`).join("");
- pdSys.innerHTML=`<div class="pdn"><div class="pdn-g"><div class="pdn-gal"><div class="pdn-main"><div class="pdn-slide">${slides[0].h}</div><button type="button" class="pdn-c l" aria-label="Poprzednie zdjęcie">‹</button><button type="button" class="pdn-c r" aria-label="Następne zdjęcie">›</button><span class="pdn-n">1 / ${slides.length}</span></div><div class="pdn-th">${thumbs}</div></div>
+ pdSys.innerHTML=`<div class="pdn"><div class="pdn-g"><div class="pdn-gal"><div class="pdn-main"><div class="pdn-slide">${slides[0].h}</div><button type="button" class="pdn-c l" aria-label="Poprzednie zdjęcie">‹</button><button type="button" class="pdn-c r" aria-label="Następne zdjęcie">›</button><span class="pdn-n">1 / ${slides.length}</span></div><div class="pdn-th">${thumbs}</div><div class="pdn-3d"><h3>Model 3D</h3><div class="pdn-3b" id="pd3"></div><small>Przeciągnij, aby obrócić. Model zmienia się razem z Twoimi ustawieniami (rodzaj wkładu, kolory, wymiar).</small></div></div>
  <div class="pdn-panel"><small class="pdn-k">Wycieraczka systemowa · ${p.lo}</small><h1>${w.n}, ${p.n}</h1><div class="pdn-pr"><b id="pdPr"></b><small id="pdPn"></small></div><small class="pdn-note" id="pdSz"></small>
  <div class="pdn-b"><span>Profil</span><div class="pdn-row">${pill(PR,p.id)}</div></div>
  <div class="pdn-b"><span>Rodzaj wkładu</span><div class="pdn-row" id="pdW">${pill(WK,w.id)}</div></div>
  <div class="pdn-b"><span>Kolor wkładu${mix?" (pierwszy rodzaj)":""}</span><div class="pdn-row">${sw(PAL[w.a],st.c1,1)}</div></div>
  ${mix?`<div class="pdn-b"><span>Kolor wkładu (drugi rodzaj)</span><div class="pdn-row">${sw(PAL[w.b],st.c2,2)}</div></div>`:""}
  <div class="pdn-b"><span>Wybierz wymiar (cm)</span><div class="pdn-dim"><label>Długość<input id="pdL" type="number" min="30" max="600" value="${st.L}" inputmode="numeric"></label><span>×</span><label>Szerokość<input id="pdS" type="number" min="30" max="300" value="${st.S}" inputmode="numeric"></label></div></div>
- <button class="btn pdn-add" id="pdAdd" type="button">Dodaj do koszyka</button><button class="btn ghost pdn-add" id="pdCfg" type="button">Konfiguruj i zobacz model 3D</button><small class="pdn-msg" id="pdMsg"></small>
+ <button class="btn pdn-add" id="pdAdd" type="button">Dodaj do koszyka</button><button class="btn ghost pdn-add" id="pdCfg" type="button">Otwórz w pełnym konfiguratorze</button><small class="pdn-msg" id="pdMsg"></small>
  <div class="pdn-info"><span>✔ Cena liczona na bieżąco</span><span>✔ Produkcja na wymiar</span><span>✔ Faktura VAT na życzenie</span></div></div></div>
  <div class="pdn-acc"><details open><summary>Opis produktu</summary><p>${DESC[w.id]}</p><p>${LONG[w.id]} ${p.lo} (${p.id} mm): ${p.t.toLowerCase()}.</p></details>
  <details><summary>Szczegóły produktu</summary><ul><li>Profil: ${p.lo} (${p.n.replace("Profil ","")})</li><li>Wkład: ${w.n}</li><li>Tulejki dystansowe między profilami zapewniają elastyczność maty</li><li>Wymiar na zamówienie, dowolna długość i szerokość</li><li>Cena za m²: ${pln(m2(p.id,w.id))} netto</li><li>Aluminiowy próg najazdowy do domówienia (${RAMPZ} zł netto / mb)</li></ul></details>
@@ -776,9 +776,10 @@ function buildSys(p,w){
  $A(".pdt").forEach(b=>b.onclick=()=>show(+b.dataset.i));$$(".pdn-c.l").onclick=()=>show(st.img-1);$$(".pdn-c.r").onclick=()=>show(st.img+1);
  $A(".pdn-b:nth-of-type(1) .pdp").forEach(b=>b.onclick=()=>openSys(PR.find(x=>x.id===b.dataset.id),w));
  $A("#pdW .pdp").forEach(b=>b.onclick=()=>openSys(p,WK.find(x=>x.id===b.dataset.id)));
- $A(".pds").forEach(b=>b.onclick=()=>{st[b.dataset.k==="1"?"c1":"c2"]=b.dataset.c;$A('.pds[data-k="'+b.dataset.k+'"]').forEach(x=>x.classList.toggle("on",x===b));if(st.img===1)show(1)});
+ $A(".pds").forEach(b=>b.onclick=()=>{st[b.dataset.k==="1"?"c1":"c2"]=b.dataset.c;$A('.pds[data-k="'+b.dataset.k+'"]').forEach(x=>x.classList.toggle("on",x===b));if(st.img===1)show(1);r3()});
  $A(".pdr").forEach(a=>a.onclick=e=>{e.preventDefault();openSys(p,WK.find(x=>x.id===a.dataset.w))});
- ["#pdL","#pdS"].forEach(s=>$$(s).addEventListener("input",upP));upP();
+ let t3=0;const r3=()=>{clearTimeout(t3);t3=setTimeout(()=>{const c=calc();render3d(p.id,w.id,st.c1,mix?st.c2:st.c1,c.L,c.S,null,$$("#pd3"))},120)};if(!window.THREE)$$(".pdn-3d").hidden=true;
+ ["#pdL","#pdS"].forEach(s=>$$(s).addEventListener("input",()=>{upP();r3()}));upP();r3();
  $$("#pdAdd").onclick=()=>{const c=calc(),cn=mix?`${LN[w.a]}: ${cname(st.c1).toLowerCase()}, ${LN[w.b]}: ${cname(st.c2).toLowerCase()}`:cname(st.c1);
   cart.push({name:`${w.n}, ${p.id}, ${cn}, ${fc(c.L)}×${c.S} cm, ${c.pl.n} profili`,gross:c.gross,dwg:{k:"std",n:w.n+", profil "+p.id,W:c.L,H:c.S,S:c.S,e:"L",p:p.id,wn:w.n,c:st.c1,cn:cname(st.c1),c2:mix?st.c2:"",c2n:mix?cname(st.c2):"",np:c.pl.n,rk:0}});
   save();draw();$$("#pdMsg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
