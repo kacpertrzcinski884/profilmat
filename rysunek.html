@@ -49,6 +49,7 @@ function sheet(d,no,all){
  // plan
  const fill=d.k==="mat"?"#2a2d30":`url(#hp${no})`;
  g+=`<path d="${path(base)}" fill="${fill}" stroke="#111" stroke-width="2.2"/>`;
+ if(d.fr&&d.k!=="mat")g+=`<path d="${path(base)}" fill="none" stroke="#1b2340" stroke-width="${Math.max(6,1.2*s)}" stroke-linejoin="miter" opacity=".9"/><path d="${path(base)}" fill="none" stroke="#2dd4bf" stroke-width="1"/>`;
  if(d.k!=="mat"&&d.S){ // linki
   const len=horiz?W:H,wid=horiz?H:W,cs=d.k==="shape"?cords(wid):cords(d.S);
   cs.forEach(v=>{const a=horiz?[X(0),Y(v)]:[X(v),Y(0)],b=horiz?[X(W),Y(v)]:[X(v),Y(H)];g+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#2563eb" stroke-width="1" stroke-dasharray="7 4" opacity=".75"/>`});
@@ -91,6 +92,7 @@ function sheet(d,no,all){
   const cl=d.k==="shape"?cords(horiz?H:W).length:cords(d.S).length;
   if(d.np)rows.push(["Liczba profili",String(d.np)]);rows.push(["Linki",cl+" szt., rozstaw maks. 40 cm (linie niebieskie przerywane)"]);
   rows.push(["Profile",horiz?"równolegle do wejścia, ułożone wzdłuż kierunku wejścia (strzałka)":"równolegle do wejścia, ułożone wzdłuż kierunku wejścia (strzałka)"])}
+ if(d.fr&&d.k!=="mat")rows.push(["Ramka","dookoła całej wycieraczki, granatowy profil C wys. 13,5 mm (na rysunku ciemny obrys)"]);
  rows.push(["Progi najazdowe",d.k==="shape"?"do ustalenia po kontakcie":rampTxt]);
  rows.push(["Pole",fm(Math.round(tot*100)/100)+" m²"]);
  if(outline)rows.push(["Własny obrys, punkty (x, y) w cm",outline.map((p,i)=>(i+1)+": ("+p[0]+", "+p[1]+")").join("; ")]);
