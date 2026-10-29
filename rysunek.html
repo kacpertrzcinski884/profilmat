@@ -88,7 +88,7 @@ function sheet(d,no,all){
  // tabela
  const tot=(area(base)-cuts.reduce((a,c)=>a+area(c),0))/10000;
  const rows=[["Pozycja",esc(d.n||"")],["Wymiar całkowity (obrys)",fm(bx2)+" × "+fm(by2)+" cm (plan z góry, początek układu w lewym górnym rogu)"]];
- if(d.k!=="mat"){rows.push(["Profil",esc(d.p||"")+" mm"]);rows.push(["Wykonanie",esc(d.wn||"")+(d.c?", kolor "+esc(d.cn||d.c)+(d.c2&&d.c2!==d.c?" / "+esc(d.c2n||d.c2):""):"")]);
+ if(d.k!=="mat"){rows.push(["Profil",(d.p==="12/30"?"niski ":d.p==="19/30"?"wysoki ":"")+esc(d.p||"")+" mm"]);rows.push(["Wykonanie",esc(d.wn||"")+(d.c?", kolor "+esc(d.cn||d.c)+(d.c2&&d.c2!==d.c?" / "+esc(d.c2n||d.c2):""):"")]);
   const cl=d.k==="shape"?cords(horiz?H:W).length:cords(d.S).length;
   if(d.np)rows.push(["Liczba profili",String(d.np)]);rows.push(["Linki",cl+" szt., rozstaw maks. 40 cm (linie niebieskie przerywane)"]);
   rows.push(["Profile",horiz?"równolegle do wejścia, ułożone wzdłuż kierunku wejścia (strzałka)":"równolegle do wejścia, ułożone wzdłuż kierunku wejścia (strzałka)"])}

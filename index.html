@@ -496,7 +496,7 @@ aside{width:100%}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const PR=[{id:"12/30",n:"Profil 12/30 mm",lo:"Profil niski",base:625,t:"Do domów i biur"},{id:"19/30",n:"Profil 19/30 mm",lo:"Profil wysoki",base:745,t:"Do wzmożonego ruchu"}];
+const PR=[{id:"12/30",n:"Profil niski 12/30 mm",lo:"Profil niski",base:625,t:"Do domów i biur"},{id:"19/30",n:"Profil wysoki 19/30 mm",lo:"Profil wysoki",base:745,t:"Do wzmożonego ruchu"}];
 const WK=[{id:"tt",n:"Tekstylny",a:"t",b:"t",add:0},{id:"gm",n:"Gumowy",a:"g",b:"g",add:96},{id:"sz",n:"Szczotkowy",a:"s",b:"s",add:275},{id:"tg",n:"Mix tekstyl + guma",a:"t",b:"g",add:48},{id:"ts",n:"Mix tekstyl + szczotka",a:"t",b:"s",add:138},{id:"gs",n:"Mix guma + szczotka",a:"g",b:"s",add:186}];
 const $=s=>document.querySelector(s),pln=v=>v.toLocaleString("pl-PL",{minimumFractionDigits:2,maximumFractionDigits:2})+" zł";
 const m2=(p,w)=>PR.find(x=>x.id===p).base+WK.find(x=>x.id===w).add;
@@ -662,7 +662,7 @@ function upd(){
  $("#sArea").textContent=a.toFixed(2).replace(".",",")+" m²";$("#sPr").textContent=pl.n+" szt.";$("#sSp").textContent=pl.n>1?(pl.n-1)+" szt.":"brak";$("#sLen").textContent=fc(L)+" cm (swobodnie "+fc((pl.L+pl.n-1)/10)+" cm)";$("#sNote").textContent=(pl.L!==Math.round(Lin*10)?"Długość dopasowano do najbliższej możliwej: "+fc(L)+" cm.":"Tulejki dystansowe między profilami są ściśnięte, co zapewnia elastyczność maty.");$("#sM2").textContent=pln(pr);$("#sNet").textContent=pln(net);$("#sGross").textContent=pln(net*1.23);
  $("#cfgSvg").innerHTML=svg(cP.value,cW.value,col,col2);$("#cfgSec").innerHTML=strips(cP.value,cW.value,col,400,240,col2).match(/<defs>.*?<\/defs>/)[0]+section(cP.value,cW.value,col,col2);render3d(cP.value,cW.value,col,mix?col2:col,L,S);
  const cn=mix?`${LN[kk.a]}: ${cname(col).toLowerCase()}, ${LN[kk.b]}: ${cname(col2).toLowerCase()}`:cname(col);
- cur={name:`${kk.n}, ${cP.value}, ${cn}, ${fc(L)}×${S} cm, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}${fr?", z ramką dookoła":""}`,gross:Math.round(net*123)/100,dwg:{fr,k:"std",n:kk.n+", profil "+cP.value,W:L,H:S,S,e:"L",p:cP.value,wn:kk.n,c:col,cn:cname(col),c2:mix?col2:"",c2n:mix?cname(col2):"",np:pl.n,rk}};
+ cur={name:`${kk.n}, ${PR.find(x=>x.id===cP.value).lo.toLowerCase()} ${cP.value}, ${cn}, ${fc(L)}×${S} cm, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}${fr?", z ramką dookoła":""}`,gross:Math.round(net*123)/100,dwg:{fr,k:"std",n:kk.n+", profil "+cP.value,W:L,H:S,S,e:"L",p:cP.value,wn:kk.n,c:col,cn:cname(col),c2:mix?col2:"",c2n:mix?cname(col2):"",np:pl.n,rk}};
 }
 $("#splitBtn").onclick=()=>{
  const h=$("#splitHint"),box=$("#splitParts"),big=+$("#cL").value>=300,L0=+$("#cL").value||0,S0=+$("#cS").value||0;
@@ -767,7 +767,7 @@ function buildSys(p,w){
  const rel=WK.filter(x=>x.id!==w.id).map(x=>`<a class="pdr" data-w="${x.id}" href="#/produkt/${SLUG(p,x)}"><div class="pdrimg">${(PH(x)||"").replace(/<i>.*?<\/i>/,"")}</div><b>${x.n}</b><small>od ${pln(m2(p.id,x.id)*.24*1.23)} brutto</small></a>`).join("");
  pdSys.innerHTML=`<div class="pdn"><div class="pdn-g"><div class="pdn-gal"><div class="pdn-main"><div class="pdn-slide">${slides[0].h}</div><button type="button" class="pdn-c l" aria-label="Poprzednie zdjęcie">‹</button><button type="button" class="pdn-c r" aria-label="Następne zdjęcie">›</button><span class="pdn-n">1 / ${slides.length}</span></div><div class="pdn-th">${thumbs}</div><div class="pdn-3d"><h3>Model 3D</h3><div class="pdn-3b" id="pd3"></div><small>Przeciągnij, aby obrócić. Model zmienia się razem z Twoimi ustawieniami (rodzaj wkładu, kolory, wymiar).</small></div></div>
  <div class="pdn-panel"><small class="pdn-k">Wycieraczka systemowa · ${p.lo}</small><h1>${w.n}, ${p.n}</h1><div class="pdn-pr"><b id="pdPr"></b><small id="pdPn"></small></div><small class="pdn-note" id="pdSz"></small>
- <div class="pdn-b"><span>Profil</span><div class="pdn-row"><button type="button" class="pdp on" data-id="${p.id}" disabled style="cursor:default;opacity:1">${p.n} (${p.lo.toLowerCase().replace("profil ","")})</button></div></div>
+ <div class="pdn-b"><span>Profil</span><div class="pdn-row"><button type="button" class="pdp on" data-id="${p.id}" disabled style="cursor:default;opacity:1">${p.n}</button></div></div>
  <div class="pdn-b"><span>Rodzaj wkładu</span><div class="pdn-row" id="pdW">${pill(WK,w.id)}</div></div>
  <div class="pdn-b"><span>Kolor wkładu${mix?" (pierwszy rodzaj)":""}</span><div class="pdn-row">${sw(PAL[w.a],st.c1,1)}</div></div>
  ${mix?`<div class="pdn-b"><span>Kolor wkładu (drugi rodzaj)</span><div class="pdn-row">${sw(PAL[w.b],st.c2,2)}</div></div>`:""}
@@ -777,7 +777,7 @@ function buildSys(p,w){
  <button class="btn pdn-add" id="pdAdd" type="button">Dodaj do koszyka</button><button class="btn ghost pdn-add" id="pdCfg" type="button">Otwórz w pełnym konfiguratorze</button><small class="pdn-msg" id="pdMsg"></small>
  <div class="pdn-info"><span>✔ Cena liczona na bieżąco</span><span>✔ Produkcja na wymiar</span><span>✔ Faktura VAT na życzenie</span></div></div></div>
  <div class="pdn-acc"><details open><summary>Opis produktu</summary><p>${DESC[w.id]}</p><p>${LONG[w.id]} ${p.lo} (${p.id} mm): ${p.t.toLowerCase()}.</p></details>
- <details><summary>Szczegóły produktu</summary><ul><li>Profil: ${p.lo} (${p.n.replace("Profil ","")})</li><li>Wkład: ${w.n}</li><li>Tulejki dystansowe między profilami zapewniają elastyczność maty</li><li>Wymiar na zamówienie, dowolna długość i szerokość</li><li>Cena za m²: ${pln(m2(p.id,w.id))} netto</li><li>Aluminiowy próg najazdowy do domówienia (${RAMPZ} zł netto / mb)</li></ul></details>
+ <details><summary>Szczegóły produktu</summary><ul><li>Profil: ${p.lo.toLowerCase()} (${p.id} mm)</li><li>Wkład: ${w.n}</li><li>Tulejki dystansowe między profilami zapewniają elastyczność maty</li><li>Wymiar na zamówienie, dowolna długość i szerokość</li><li>Cena za m²: ${pln(m2(p.id,w.id))} netto</li><li>Aluminiowy próg najazdowy do domówienia (${RAMPZ} zł netto / mb)</li></ul></details>
  <details><summary>Dostawa, zwroty i montaż</summary><p>Produkt wykonujemy na wymiar po potwierdzeniu zamówienia. Termin i koszt dostawy podamy przy potwierdzeniu. Wycieraczki na wymiar nie podlegają zwrotowi (szczegóły w regulaminie). Montaż wykonujemy na życzenie, skontaktuj się z nami.</p></details></div>
  <h2 class="pdn-h">Może Ci się spodobać</h2><div class="pdn-rel">${rel}</div></div>`;
  const $$=s=>pdSys.querySelector(s),$A=s=>pdSys.querySelectorAll(s);
@@ -794,7 +794,7 @@ function buildSys(p,w){
  let t3=0;const r3=()=>{clearTimeout(t3);t3=setTimeout(()=>{const c=calc(),bx=$$("#pd3");bx._rk=st.rk;bx._fr=st.fr;render3d(p.id,w.id,st.c1,mix?st.c2:st.c1,c.L,c.S,null,bx)},120)};if(!window.THREE)$$(".pdn-3d").hidden=true;
  ["#pdL","#pdS"].forEach(s=>$$(s).addEventListener("input",()=>{upP();r3()}));upP();r3();
  $$("#pdAdd").onclick=()=>{const c=calc(),cn=mix?`${LN[w.a]}: ${cname(st.c1).toLowerCase()}, ${LN[w.b]}: ${cname(st.c2).toLowerCase()}`:cname(st.c1);
-  cart.push({name:`${w.n}, ${p.id}, ${cn}, ${fc(c.L)}×${c.S} cm, ${c.pl.n} profili${st.rk?", "+RL.find(x=>x[0]===st.rk)[1].toLowerCase():""}${st.fr?", z ramką dookoła":""}`,gross:c.gross,dwg:{k:"std",n:w.n+", profil "+p.id,W:c.L,H:c.S,S:c.S,e:"L",p:p.id,wn:w.n,c:st.c1,cn:cname(st.c1),c2:mix?st.c2:"",c2n:mix?cname(st.c2):"",np:c.pl.n,rk:st.rk,fr:st.fr}});
+  cart.push({name:`${w.n}, ${p.lo.toLowerCase()} ${p.id}, ${cn}, ${fc(c.L)}×${c.S} cm, ${c.pl.n} profili${st.rk?", "+RL.find(x=>x[0]===st.rk)[1].toLowerCase():""}${st.fr?", z ramką dookoła":""}`,gross:c.gross,dwg:{k:"std",n:w.n+", profil "+p.id,W:c.L,H:c.S,S:c.S,e:"L",p:p.id,wn:w.n,c:st.c1,cn:cname(st.c1),c2:mix?st.c2:"",c2n:mix?cname(st.c2):"",np:c.pl.n,rk:st.rk,fr:st.fr}});
   save();draw();$$("#pdMsg").textContent="Dodano do koszyka.";$("#cart").classList.add("open")};
  $$("#pdCfg").onclick=()=>{pdClose();cP.value=p.id;cW.value=w.id;$("#cR").value=st.rk;$("#cF").value=st.fr;$("#cL").value=Math.max(30,+$$("#pdL").value||120);$("#cS").value=Math.max(30,+$$("#pdS").value||90);upd();setTimeout(()=>$("#konfigurator").scrollIntoView(),50)};
 }
