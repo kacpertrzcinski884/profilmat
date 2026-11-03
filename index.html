@@ -553,7 +553,7 @@ function strips(p,w,col,W,H,col2,seq,S){
  const wd=36,f=5.4,iw=wd-2*f,gap=6,ys=S?cords(S).map(o=>H/2+o/S*(H-18)):[H*.28,H*.72];
  const ins=(t,x,y,w,h,col,hi,lo,c)=>{let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${t==="s"?"#1b1c1e":col}"/>`;
   if(t==="t")s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${ryD("t#"+c)?"pRt":"pT"}${c})"/>`;if(t!=="t"&&ryD(t+"#"+c))s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#pR${t}${c})"/>`;
-  if(t==="s"){const r=w*.115,sp=w*.42;for(let yy=y+sp*.55,j=0;yy<y+h-r;yy+=sp,j++)[[x+w*.3,yy],[x+w*.72,yy+sp/2]].forEach(([cx,cy])=>{if(cy<y+h-r)s+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}" fill="${col}"/><circle cx="${(cx-r*.2).toFixed(1)}" cy="${(cy-r*.2).toFixed(1)}" r="${(r*.6).toFixed(1)}" fill="${hi}" opacity=".55"/>`})}if(t==="s")s+=`<rect x="${x+2}" y="${y}" width="0" height="${h}" fill="none"/><rect x="${x}" y="${y}" width="2" height="${h}" fill="#141517"/><rect x="${x+w-2}" y="${y}" width="2" height="${h}" fill="#141517"/>`;
+  if(t==="s"){const r=w*.09,sp=w*.42;for(let yy=y+sp*.55,j=0;yy<y+h-r;yy+=sp,j++)[[x+w*.23,yy],[x+w*.5,yy+sp/2],[x+w*.77,yy]].forEach(([cx,cy])=>{if(cy<y+h-r)s+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}" fill="${col}"/><circle cx="${(cx-r*.2).toFixed(1)}" cy="${(cy-r*.2).toFixed(1)}" r="${(r*.6).toFixed(1)}" fill="${hi}" opacity=".55"/>`})}if(t==="s")s+=`<rect x="${x+2}" y="${y}" width="0" height="${h}" fill="none"/><rect x="${x}" y="${y}" width="2" height="${h}" fill="#141517"/><rect x="${x+w-2}" y="${y}" width="2" height="${h}" fill="#141517"/>`;
   if(t==="g"&&!ryD("g#"+c))for(let q=1;q<(w>30?6:4);q++){const fx=x+w*q/(w>30?6:4);s+=`<line x1="${fx}" y1="${y}" x2="${fx}" y2="${y+h}" stroke="${lo}" stroke-width="1.8"/><line x1="${fx+1.6}" y1="${y}" x2="${fx+1.6}" y2="${y+h}" stroke="${hi}" stroke-width=".8" opacity=".6"/>`}
   return s+`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#gS)"/>`};
  const fl=x=>`<rect x="${x}" y="9" width="${f}" height="${H-18}" fill="url(#gA)" stroke="#9aa1a8" stroke-width=".6"/><line x1="${x+f*.5}" y1="9" x2="${x+f*.5}" y2="${H-9}" stroke="#7f868c" stroke-width=".8"/>`;
@@ -680,7 +680,7 @@ function render3d(p,w,c1,c2,L,S,seq,tgt){
   add(W2,ft+.02,isw,0,T-ft/2,zc,mb);
   if(tp==="g"&&!ryTex0(tp+cc))[.17,.5,.83].forEach(q=>add(W2,pr,isw*.2,0,T+pr/2,zs+.06+isw*q,mc));
   if(tp==="t"||tp==="g"){const RT=ryTex(tp+cc,W2,isw);if(RT){const pm=new THREE.Mesh(new THREE.PlaneGeometry(W2,isw),new THREE.MeshStandardMaterial({map:RT,bumpMap:RT,bumpScale:1.2,roughness:.95,metalness:0}));pm.rotation.x=-Math.PI/2;pm.position.set(0,T+.05,zc);g.add(pm)}else if(tp==="t")for(let j=0,m=Math.floor(isw/.3);j<m;j++)add(W2,pr,.14,0,T+pr/2,zs+.13+j*(isw-.14)/(m-1),mc)}
-  if(tp==="s"){const q=tf[cc]||(tf[cc]=[]),k2=isw/2.04;for(let xx=-W2/2+.4,a=0;xx<W2/2-.3;xx+=.86,a++){q.push(xx,T,zc-.42*k2);if(xx+.43<W2/2-.3)q.push(xx+.43,T,zc+.42*k2)}}
+  if(tp==="s"){const q=tf[cc]||(tf[cc]=[]),k2=isw/2.04;for(let xx=-W2/2+.4,a=0;xx<W2/2-.3;xx+=.86,a++){q.push(xx,T,zc-.51*k2,xx,T,zc+.51*k2);if(xx+.43<W2/2-.3)q.push(xx+.43,T,zc)}}
   if(i<n-1)CO.forEach(q=>sl.push(q,B+hh*.5,z0+wd+gps[i]/2,gps[i]));
  }
  CO.forEach(q=>add(.12,.12,Lz,q,B+hh*.5,0,gr));
@@ -688,7 +688,7 @@ function render3d(p,w,c1,c2,L,S,seq,tgt){
  BK.forEach((q,m)=>{const c=q.length/6,im=new THREE.InstancedMesh(ub,m,c);for(let i=0;i<c;i++){dm.position.set(q[6*i+3],q[6*i+4],q[6*i+5]);dm.rotation.set(0,0,0);dm.scale.set(q[6*i],q[6*i+1],q[6*i+2]);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)});
  const uc=new THREE.CylinderGeometry(.09,.09,1,5);
  for(const c in br){const q=br[c],cnt=q.length/6,im=new THREE.InstancedMesh(uc,mat(c,.85,0),cnt);for(let i=0;i<cnt;i++){const h=q[6*i+3];dm.position.set(q[6*i],q[6*i+1]+h/2,q[6*i+2]);dm.rotation.set(q[6*i+4],0,q[6*i+5]);dm.scale.set(1,h,1);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)}
- for(const c in tf){const q=tf[c],cnt=q.length/3,im=new THREE.InstancedMesh(new THREE.CylinderGeometry(.21,.23,1,9),mat(c,.95,0),cnt);for(let i=0;i<cnt;i++){dm.position.set(q[3*i],q[3*i+1]+.17,q[3*i+2]);dm.rotation.set(0,0,0);dm.scale.set(1,.34+((i*7)%5)*.02,1);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)}
+ for(const c in tf){const q=tf[c],cnt=q.length/3,im=new THREE.InstancedMesh(new THREE.CylinderGeometry(.17,.19,1,9),mat(c,.95,0),cnt);for(let i=0;i<cnt;i++){dm.position.set(q[3*i],q[3*i+1]+.17,q[3*i+2]);dm.rotation.set(0,0,0);dm.scale.set(1,.34+((i*7)%5)*.02,1);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)}
  if(sl.length){const us=new THREE.CylinderGeometry(.19,.19,1,12),im=new THREE.InstancedMesh(us,slv,sl.length/4);for(let i=0;i<sl.length/4;i++){dm.position.set(sl[4*i],sl[4*i+1],sl[4*i+2]);dm.rotation.set(Math.PI/2,0,0);dm.scale.set(1,sl[4*i+3]+.04,1);dm.updateMatrix();im.setMatrixAt(i,dm.matrix)}g.add(im)}
  const rk3=tgt?(tgt._rk||0):+$("#cR").value,fr=tgt?(tgt._fr||0):($("#cF")?+$("#cF").value:0);let rE=0;
  if(rk3&&!close){const hx=W2/2+.2+(fr?.5:0),hz=Lz/2+.2+(fr?.5:0),r=4,H=T,P=[],I=[],v=(x,y,z)=>{P.push(x,y,z);return P.length/3-1},q=(a,b,c,e)=>I.push(a,b,c,a,c,e),tr=(a,b,c)=>I.push(a,b,c);rE=2*r;
@@ -953,7 +953,7 @@ function paintMat(){
  for(let i=0;i<P.n;i++){
   const e=seq[i%2],c=e.c;
   R(u,0,3,wid,"#cdd2d7");R(u,0,.07,wid,"#8f969c");R(u+.43,0,.05,wid,"#a9b0b6");R(u+2.52,0,.05,wid,"#a9b0b6");R(u+2.93,0,.07,wid,"#8f969c");
-  const RPT=ryPat(e.t+c);R(u+.48,0,2.04,wid,RPT||(e.t==="s"?"#1b1c1e":c));if(e.t==="s"&&fine)for(let v=.5,j=0;v<wid-.3;v+=.86,j++)[[.3,0],[.72,.43]].forEach(([a,b])=>{const X=ox,Y=oy;const uu=u+.48+2.04*a,vv=v+b;g.fillStyle=c;g.beginPath();const px=hz?ox+uu*sc:ox+vv*sc,py=hz?oy+vv*sc:oy+uu*sc;g.arc(px,py,.22*sc,0,7);g.fill();g.fillStyle="rgba(255,255,255,.18)";g.beginPath();g.arc(px-.05*sc,py-.05*sc,.13*sc,0,7);g.fill()});
+  const RPT=ryPat(e.t+c);R(u+.48,0,2.04,wid,RPT||(e.t==="s"?"#1b1c1e":c));if(e.t==="s"&&fine)for(let v=.5,j=0;v<wid-.3;v+=.86,j++)[[.23,0],[.5,.43],[.77,0]].forEach(([a,b])=>{const X=ox,Y=oy;const uu=u+.48+2.04*a,vv=v+b;g.fillStyle=c;g.beginPath();const px=hz?ox+uu*sc:ox+vv*sc,py=hz?oy+vv*sc:oy+uu*sc;g.arc(px,py,.18*sc,0,7);g.fill();g.fillStyle="rgba(255,255,255,.18)";g.beginPath();g.arc(px-.04*sc,py-.04*sc,.11*sc,0,7);g.fill()});
   if(e.t==="t"&&fine&&!RPT)for(let v=0;v<wid;v+=.28)R(u+.48,v,2.04,.09,shade(c,-26));
   if(e.t==="g"&&!RPT)for(let q=1;q<6;q++){R(u+.48+2.04*q/6-.09,0,.18,wid,shade(c,-42));R(u+.48+2.04*q/6+.09,0,.07,wid,shade(c,35))}
   if(e.t==="s"){R(u+.48,0,.14,wid,"#141517");R(u+2.38,0,.14,wid,"#141517");if(fine&&!RPT)for(let v=0;v<wid;v+=.2)R(u+.66,v,1.68,.07,shade(c,12))}
