@@ -151,7 +151,55 @@ h2{display:inline-block;background:linear-gradient(transparent 62%,rgba(255,106,
 #lb div{width:min(1400px,100%);height:100%;background:#fff var(--lbimg) center/contain no-repeat;border-radius:10px}
 #lb button{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:16px;font-size:1rem}
 </style>
-</head>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><style id="trend">
+:root{--fh:"Bricolage Grotesque","Segoe UI",Roboto,Arial,sans-serif;--fb:"Inter","Segoe UI",Roboto,Arial,sans-serif;--r2:28px}
+body{font-family:var(--fb);background:#F2F2EE!important;letter-spacing:-.005em}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+h1,h2,h3,.pd h1,.pd h2{font-family:var(--fh)!important;letter-spacing:-.03em;font-weight:700}
+h1{font-size:clamp(2.6rem,7vw,5.6rem)!important;line-height:.98!important}
+h2{font-size:clamp(1.9rem,4vw,3rem)!important;line-height:1.02}
+header b,#logo{font-family:var(--fh)!important;font-weight:800!important;font-size:1.35rem!important;letter-spacing:-.04em}
+/* pływające menu-pigułka */
+header{margin:12px auto 0!important;width:min(1160px,calc(100% - 24px));border-radius:999px!important;padding:10px 12px 10px 24px!important;top:calc(env(safe-area-inset-top,0px) + 10px)!important;background:rgba(18,58,63,.72)!important;-webkit-backdrop-filter:saturate(1.6) blur(18px)!important;backdrop-filter:saturate(1.6) blur(18px)!important;border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 10px 40px rgba(18,58,63,.25)!important}
+header a.n{padding:8px 12px;border-radius:99px}header a.n:hover{background:rgba(255,255,255,.12)}
+#cartBtn{background:#E85D3F!important;border:0!important;color:#fff!important;border-radius:99px!important;padding:10px 20px!important}
+/* hero: aurora + wielki tekst */
+.hero{margin:-74px 0 0!important;padding-top:150px!important;padding-bottom:110px!important;background:radial-gradient(700px 420px at 90% 0%,rgba(232,93,63,.55),transparent 62%),radial-gradient(600px 500px at 0% 100%,rgba(79,170,176,.45),transparent 60%),linear-gradient(160deg,#0f3035,#1F5C63)!important;border-radius:0 0 48px 48px}
+.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:conic-gradient(from 0deg,rgba(240,131,106,.35),rgba(79,170,176,.0),rgba(240,131,106,.35));filter:blur(40px);animation:spin 18s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero .hl{font-style:italic;font-weight:600;background:linear-gradient(90deg,#f0836a,#ffc2a8);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent}
+.hero .pv{border-radius:var(--r2)!important;background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.22)!important;padding:14px!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transform:rotate(1.5deg);transition:transform .5s}
+.hero .pv:hover{transform:rotate(0) scale(1.02)}
+.hero .pv small{color:#cfe0e0!important}
+.hero .ph{border-radius:20px!important}
+/* przyciski: pigułki */
+.btn{border-radius:999px!important;padding:13px 24px!important;font-family:var(--fh);font-weight:700;letter-spacing:-.01em}
+.btn:not(.ghost):not(#cartBtn)::after{content:" →";display:inline-block;transition:transform .2s}
+.btn:not(.ghost):hover::after{transform:translateX(4px)}
+/* marquee */
+.mq{overflow:hidden;white-space:nowrap;background:#E85D3F;color:#fff;padding:14px 0;transform:rotate(-1.2deg);margin:-30px -20px 20px;position:relative;z-index:2;box-shadow:0 12px 30px rgba(232,93,63,.35)}
+.mq div{display:inline-block;animation:mq 28s linear infinite;font:800 1.05rem var(--fh);letter-spacing:.02em;text-transform:uppercase}
+.mq span{margin:0 22px}.mq i{font-style:normal;opacity:.7}
+@keyframes mq{to{transform:translateX(-50%)}}
+/* bento: kafelki i karty */
+.tile,.card,.sum,.cfg,.form,.pdin,.it,.pf{border-radius:var(--r2)!important}
+.card{border:1px solid rgba(31,92,99,.1)!important;box-shadow:0 1px 0 #fff inset,0 20px 50px -24px rgba(18,58,63,.35)!important;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s!important}
+.card:hover{transform:translateY(-6px) rotate(-.4deg)!important;box-shadow:0 30px 60px -22px rgba(18,58,63,.45)!important}
+.card h3{font-size:1.15rem!important}
+.grid{gap:18px!important}
+.rp,.card .ph{border-radius:20px!important}
+.cats .cat a,.cats a{border-radius:99px!important}
+#ksztalt>div{border-radius:40px!important;border-left:0!important;background:linear-gradient(135deg,#123a3f,#1F5C63 70%,#2b7a82)!important;box-shadow:0 30px 70px -30px rgba(18,58,63,.7);position:relative;overflow:hidden}
+#ksztalt>div::before{content:"";position:absolute;right:-60px;bottom:-80px;width:260px;height:260px;border-radius:50%;background:#E85D3F;opacity:.25;filter:blur(30px)}
+#ksztalt h2{font-size:clamp(1.8rem,3.6vw,2.8rem)!important}
+section>h2::before,section h2::before{height:6px!important;width:56px!important;border-radius:9px!important}
+footer{border-radius:48px 48px 0 0;margin-top:40px}
+input,select,textarea{border-radius:14px!important}
+/* pojawianie się + mikro-interakcje */
+.rv{opacity:0;transform:translateY(24px) scale(.98);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}.rv.in{opacity:1;transform:none}
+.card .btn,.card button{padding:10px 8px!important;font-size:.8rem!important;border-radius:14px!important;line-height:1.15}.card .btn::after{content:none!important}@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.mq div,.hero::after{animation:none}}
+@media(max-width:760px){header{border-radius:28px!important;flex-wrap:wrap;gap:6px 4px!important;padding:10px 14px!important}.hero{border-radius:0 0 32px 32px;padding-top:170px!important}.mq{margin:-20px -20px 10px}}
+</style></head>
 <body>
 <header>
 <b id="logo" role="link" tabindex="0" title="Strona główna" style="cursor:pointer">ProfilMat</b>
@@ -1061,5 +1109,6 @@ var pv=document.querySelector(".hero .pv");
 if(pv&&matchMedia("(hover:hover)").matches){var hero=document.querySelector(".hero");hero.addEventListener("mousemove",function(e){var r=hero.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;pv.style.setProperty("--px",(x*-22)+"px");pv.style.setProperty("--py",(y*-16)+"px")});hero.addEventListener("mouseleave",function(){pv.style.setProperty("--px","0px");pv.style.setProperty("--py","0px")})}
 var cnt=document.getElementById("cnt");if(cnt&&window.MutationObserver){new MutationObserver(function(){cnt.animate([{transform:"scale(1)"},{transform:"scale(1.5)"},{transform:"scale(1)"}],{duration:350})}).observe(cnt,{childList:true,characterData:true,subtree:true})}
 })();
-</script></body>
+</script><script>(function(){try{var h=document.querySelector(".hero");if(h&&!document.querySelector(".mq")){var t=["Na wymiar","Profile aluminiowe","Ryps","Guma","Szczotka","Własny kształt","Rysunek techniczny w zamówieniu","Cena od razu"],x=t.map(function(a){return"<span>"+a+"</span><i>✦</i>"}).join("");var m=document.createElement("div");m.className="mq";m.innerHTML="<div>"+x+x+x+x+"</div>";h.after(m)}
+if("IntersectionObserver"in window){var io=new IntersectionObserver(function(e){e.forEach(function(k){if(k.isIntersecting){k.target.classList.add("in");io.unobserve(k.target)}})},{threshold:.08});var mark=function(){document.querySelectorAll(".card,.tile,section>h2,#ksztalt>div").forEach(function(n){if(!n.dataset.rv){n.dataset.rv=1;n.classList.add("rv");io.observe(n)}})};mark();new MutationObserver(mark).observe(document.body,{childList:true,subtree:true})}}catch(e){}})()</script></body>
 </html>
