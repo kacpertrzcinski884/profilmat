@@ -92,7 +92,7 @@ function sheet(d,no,all){
   const cl=d.k==="shape"?cords(horiz?H:W).length:cords(d.S).length;
   if(d.np)rows.push(["Liczba profili",String(d.np)]);rows.push(["Linki",cl+" szt., rozstaw maks. 40 cm (linie niebieskie przerywane)"]);
   rows.push(["Profile",horiz?"równolegle do wejścia, ułożone wzdłuż kierunku wejścia (strzałka)":"równolegle do wejścia, ułożone wzdłuż kierunku wejścia (strzałka)"])}
- if(d.fr&&d.k!=="mat")rows.push(["Ramka",String(d.p).indexOf("19")===0?"dookoła całej wycieraczki, srebrny kątownik aluminiowy: ścianka 5 mm, wysokość 21 mm, kołnierz 24,5 mm (na rysunku szary obrys)":"dookoła całej wycieraczki, srebrny kątownik aluminiowy: ścianka 5 mm, wysokość 13,5 mm, kołnierz 24,5 mm (na rysunku szary obrys)"]);
+ if(d.fo)rows.push(["Wymiar zewnętrzny (z ramką)",String(d.fo[0]).replace(".",",")+" × "+d.fo[1]+" cm (od wymiaru zewnętrznego odjęto 1,2 cm: 2 ścianki ramki po 5 mm i 2 mm luzu technicznego; wkład ma wymiar podany w wierszu \"Wymiar całkowity\")"]);if(d.fr&&d.k!=="mat")rows.push(["Ramka",String(d.p).indexOf("19")===0?"dookoła całej wycieraczki, srebrny kątownik aluminiowy: ścianka 5 mm, wysokość 21 mm, kołnierz 24,5 mm (na rysunku szary obrys)":"dookoła całej wycieraczki, srebrny kątownik aluminiowy: ścianka 5 mm, wysokość 13,5 mm, kołnierz 24,5 mm (na rysunku szary obrys)"]);
  rows.push(["Progi najazdowe",d.k==="shape"?"do ustalenia po kontakcie":rampTxt]);
  rows.push(["Pole",fm(Math.round(tot*100)/100)+" m²"]);
  if(outline)rows.push(["Własny obrys, punkty (x, y) w cm",outline.map((p,i)=>(i+1)+": ("+p[0]+", "+p[1]+")").join("; ")]);
