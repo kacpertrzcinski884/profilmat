@@ -617,7 +617,12 @@ const TI=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQ
 TL.forEach(([v,n,x,y],i)=>{const b=document.createElement("button");b.className="tile";b.style.backgroundImage="url("+TI[i]+")";b.style.backgroundSize="cover";b.style.backgroundPosition="center";b.title="Ustaw ten wkład w konfiguratorze";b.innerHTML="<span style=\"background:"+TCOL[v[0]]+"\">"+n+"</span>";b.onclick=()=>setIns(v);$("#tiles").append(b)});
 
 const RYH=["t#6a4c36","t#b79f7a","t#26292c","t#6f8290","t#b88a3e","t#a3242b","g#8b9096",0,"g#26292c",0],RYI={},RYP={};
-function ryCan(h){const im=RYI[h];if(!im)return null;const k=document.createElement("canvas");k.width=k.height=160;k.getContext("2d").drawImage(im,0,0,160,160);return k}
+function ryCan(h){const im=RYI[h];if(!im)return null;const N=160,k=document.createElement("canvas");k.width=k.height=N;const x=k.getContext("2d");x.drawImage(im,0,0,N,N);
+ if(h[0]==="t"){const A=x.getImageData(0,0,N,N),B=document.createElement("canvas");B.width=B.height=N;const y=B.getContext("2d"),H=N/2;y.drawImage(k,0,0,H,H,H,H,H,H);y.drawImage(k,H,0,H,H,0,H,H,H);y.drawImage(k,0,H,H,H,H,0,H,H);y.drawImage(k,H,H,H,H,0,0,H,H);const S=y.getImageData(0,0,N,N),d=A.data,e=S.data;
+  for(let py=0;py<N;py++)for(let px=0;px<N;px++){const w=Math.sin(Math.PI*(px+.5)/N)*Math.sin(Math.PI*(py+.5)/N),o=4*(py*N+px);for(let c=0;c<3;c++)d[o+c]=d[o+c]*w+e[o+c]*(1-w)}
+  const t=parseInt(h.slice(2),16),T=[t>>16&255,t>>8&255,t&255],m=[0,0,0];for(let o=0;o<d.length;o+=4)for(let c=0;c<3;c++)m[c]+=d[o+c];const n=d.length/4,g=m.map((v,c)=>Math.min(3,Math.max(.3,.85*T[c]/(v/n+1))));
+  for(let o=0;o<d.length;o+=4)for(let c=0;c<3;c++)d[o+c]=Math.min(255,d[o+c]*g[c]);x.putImageData(A,0,0)}
+ return k}
 const RYD={};function ryD(h){if(!RYD[h]){const k=ryCan(h);if(!k)return null;RYD[h]=k.toDataURL("image/jpeg",.8)}return RYD[h]}
 function ryTex0(h){return !!RYI[h]}
 function ryPat(h){if(!RYP[h]){const k=ryCan(h);if(!k)return null;RYP[h]=cv.getContext("2d").createPattern(k,"repeat")}return RYP[h]}
