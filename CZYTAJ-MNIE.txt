@@ -1,4 +1,4 @@
-Paczka sklepu ProfilMat na własną domenę.
+Paczka sklepu MatLine na własną domenę.
 
 1. Wgraj cały folder na hosting (poza plikiem CZYTAJ-MNIE.txt).
 2. Adres sklepu jest już wpisany we wszystkich plikach.

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Rysunek techniczny | ProfilMat</title>
+<title>Rysunek techniczny | MatLine</title>
 <style>
 @page{size:A4 landscape;margin:8mm}
 *{box-sizing:border-box}
@@ -19,7 +19,7 @@ h2{margin:4px 0 6px;font:600 1.15rem Georgia,serif}
 .msg{max-width:700px;margin:40px auto;padding:20px;background:#fff;border:1px solid #c9ced3;border-radius:8px}
 @media print{body{background:#fff}.bar{display:none}.sheet{border:0;margin:0;padding:0;max-width:none}}
 </style></head><body>
-<div class="bar"><b>ProfilMat · rysunek techniczny</b><button onclick="print()">Drukuj / zapisz jako PDF</button></div>
+<div class="bar"><b>MatLine · rysunek techniczny</b><button onclick="print()">Drukuj / zapisz jako PDF</button></div>
 <div id="out"></div>
 <script>
 (function(){
@@ -100,7 +100,7 @@ function sheet(d,no,all){
   rows.push(["Wcięcie "+(i+1),rect?fm(x2-x1)+" × "+fm(y2-y1)+" cm. Od lewej krawędzi: "+fm(x1)+" cm, od górnej: "+fm(y1)+" cm, od prawej: "+fm(bx2-x2)+" cm, od dolnej: "+fm(by2-y2)+" cm":"wielokąt, pole "+fm(Math.round(area(c)/100)/100)+" m², punkty (x, y) w cm: "+c.map((p,k)=>(k+1)+": ("+p[0]+", "+p[1]+")").join("; ")])});
  rows.push(["Uwaga","Rysunek poglądowy wygenerowany ze sklepu. Wymiary podano w centymetrach. Ostateczne wymiary potwierdzimy z klientem."]);
  const el=document.createElement("div");el.className="sheet";
- el.innerHTML=`<h2>Rysunek techniczny ${all>1?no+" z "+all:""} · ${esc(d.n||"")}</h2><svg viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Rysunek techniczny z wymiarami">${g}</svg><table>${rows.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join("")}</table><p style="font-size:11px;color:#5d656c;margin:6px 0 0">Wygenerowano: ${new Date().toLocaleDateString("pl-PL")} · ProfilMat</p>`;
+ el.innerHTML=`<h2>Rysunek techniczny ${all>1?no+" z "+all:""} · ${esc(d.n||"")}</h2><svg viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Rysunek techniczny z wymiarami">${g}</svg><table>${rows.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join("")}</table><p style="font-size:11px;color:#5d656c;margin:6px 0 0">Wygenerowano: ${new Date().toLocaleDateString("pl-PL")} · MatLine</p>`;
  return el}
 })();
 </script></body></html>
