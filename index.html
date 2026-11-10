@@ -1251,8 +1251,11 @@ function bind(zid,lid,cid){
  async function look(code){
   if(cache[code]){cache[code]===1?say("Nie znaleziono tego kodu w bazie. Sprawdź kod lub wpisz miejscowość ręcznie.",null):show(cache[code]);return}
   if(ctl)ctl.abort();ctl=new AbortController();say("Sprawdzam kod...");
-  try{const r=await fetch("https://api.zippopotam.us/pl/"+code,{signal:ctl.signal});
+  try{const hy=code.slice(0,2)+"-"+code.slice(2);
+   let r=await fetch("https://api.zippopotam.us/pl/"+hy,{signal:ctl.signal});
+   if(!r.ok&&r.status!==404)r=await fetch("https://api.zippopotam.us/pl/"+code,{signal:ctl.signal});
    if(r.status===404){cache[code]=1;say("Nie znaleziono tego kodu w bazie. Sprawdź kod lub wpisz miejscowość ręcznie.",null);return}
+   if(!r.ok)throw new Error("http "+r.status);
    const j=await r.json(),pl=[...new Set((j.places||[]).map(p=>p["place name"]))];
    if(!pl.length){cache[code]=1;say("Nie znaleziono tego kodu w bazie. Wpisz miejscowość ręcznie.",null);return}
    cache[code]=pl;show(pl)}
