@@ -1153,8 +1153,9 @@ function entry(){
 }
 function edgeLabels(){
  g.font="bold 11px sans-serif";g.textAlign="center";g.textBaseline="middle";
- const one=(p,col)=>{for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length],l=Math.hypot(b[0]-a[0],b[1]-a[1]);if(l<10||l*sc<34)continue;const m=P([(a[0]+b[0])/2,(a[1]+b[1])/2]),t=fm(Math.round(l*10)/10)+" cm";g.lineWidth=4;g.strokeStyle="#fff";g.strokeText(t,m[0],m[1]);g.fillStyle=col;g.fillText(t,m[0],m[1])}};
- one(base(),"#16191c");cuts.forEach(c=>one(c.p,"#D8512F"));g.textBaseline="alphabetic";
+ const one=(p,col,halo)=>{for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length],l=Math.hypot(b[0]-a[0],b[1]-a[1]);if(l<10||l*sc<34)continue;const m=P([(a[0]+b[0])/2,(a[1]+b[1])/2]),t=fm(Math.round(l*10)/10)+" cm";g.lineWidth=5;g.lineJoin="round";g.strokeStyle=halo||"#fff";g.strokeText(t,m[0],m[1]);g.fillStyle=col;g.fillText(t,m[0],m[1])}};
+ const kk=WK.find(x=>x.id===cW.value),lm=c=>{try{const n=parseInt(String(c).slice(1),16);return(.299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255))/255}catch(e){return .5}},dk=(lm(col)+(kk&&kk.a!==kk.b?lm(col2):lm(col)))/2<.55;
+ one(base(),dk?"#ffffff":"#16191c",dk?"rgba(0,0,0,.85)":"rgba(255,255,255,.95)");cuts.forEach(c=>one(c.p,"#D8512F"));g.textBaseline="alphabetic";
 }
 function list(){
  const L=$("#shList");let h="";
