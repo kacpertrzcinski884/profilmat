@@ -775,7 +775,7 @@ function ryCan(h){const im=RYI[h];if(!im)return null;const N=160,k=document.crea
  return k}
 const RYD={};function ryD(h){if(!RYD[h]){const k=ryCan(h);if(!k)return null;RYD[h]=k.toDataURL("image/jpeg",.8)}return RYD[h]}
 function ryTex0(h){return !!RYI[h]}
-function ryPat(h){if(!RYP[h]){const k=ryCan(h);if(!k)return null;RYP[h]=cv.getContext("2d").createPattern(k,"repeat")}return RYP[h]}
+function ryPat(h){if(!RYP[h]){const k=ryCan(h);if(!k)return null;RYP[h]=(window._pcx||(window._pcx=document.createElement("canvas").getContext("2d"))).createPattern(k,"repeat")}return RYP[h]}
 function ryTex(h,w,l){const k=ryCan(h);if(!k||!window.THREE)return null;const T=new THREE.CanvasTexture(k);T.wrapS=T.wrapT=THREE.RepeatWrapping;T.repeat.set(w/2.2,l/2.2);T.anisotropy=4;return T}
 RYH.forEach((h,i)=>{if(!h)return;const im=new Image();im.onload=()=>{RYI[h]=im;clearTimeout(window._ryT);window._ryT=setTimeout(()=>{try{draw()}catch(e){}try{upd()}catch(e){}},60)};im.src=RYS[i]||TI[i]});
 
