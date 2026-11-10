@@ -1211,7 +1211,7 @@ const close=()=>{of.hidden=true;document.body.style.overflow=""};
 $("#ofX").onclick=close;of.addEventListener("click",e=>{if(e.target===of)close()});
 $("#co").onclick=()=>{const cm=$("#cm");if(!cart.length){cm.textContent="Dodaj najpierw produkt do koszyka.";return}cm.textContent="";
  const lines=cart.map((c,i)=>(i+1)+". "+c.name+" - "+pln(c.gross)+" brutto").join("\n"),sum=cart.reduce((s,c)=>s+c.gross,0);
- open("Wyślij zamówienie","Razem "+pln(sum)+" brutto. Skontaktujemy się, żeby potwierdzić wycenę, termin i płatność.","ZAMÓWIENIE ZE SKLEPU\n"+lines+"\nRazem brutto: "+pln(sum),"Zamówienie",dwgLink(cart.flatMap(c=>c.dwg?[].concat(c.dwg):[])))};
+ open("Wyślij zamówienie","Razem "+pln(sum)+" brutto. Skontaktujemy się, żeby potwierdzić wycenę, termin i płatność.","ZAMÓWIENIE ZE SKLEPU\n"+lines+"\nRazem brutto: "+pln(sum),"Zamówienie",dwgLink(cart.flatMap(c=>c.dwg?[].concat(c.dwg):[])));$("#cart").classList.remove("open")};
 $("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi ustawieniami: "+cur.name,"ZAPYTANIE O WYCENĘ\n"+cur.name+"\nCena orientacyjna brutto: "+pln(cur.gross),"Zapytanie o wycenę",dwgLink([].concat(cur.dwg||[])))};
 F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked)return;
  if(FORM_KEY==="WSTAW_KLUCZ"){R.textContent="Formularz nie jest jeszcze podłączony do poczty. Napisz do nas bezpośrednio.";return}
