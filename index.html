@@ -675,7 +675,7 @@ aside{width:100%}
 <label>Miejscowość<input id="ofFL" maxlength="80" style="width:100%"></label>
 <label>Kraj<input id="ofFK" maxlength="60" value="Polska" style="width:100%"></label></div></div></fieldset>
 <label>Uwagi (opcjonalnie)<textarea id="ofM" rows="3" maxlength="1000" style="width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 10px;font:inherit;color:inherit"></textarea></label>
-<input type="checkbox" id="ofB" tabindex="-1" autocomplete="off" style="display:none">
+<input type="checkbox" id="ofB" tabindex="-1" autocomplete="off" style="display:none"><input type="text" id="ofW" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
 <label style="display:flex;gap:8px;align-items:flex-start;font-size:.9rem"><input type="checkbox" id="ofC" required style="min-width:18px;margin-top:3px"><span>Zgadzam się na przetwarzanie moich danych w celu odpowiedzi na zapytanie lub realizacji zamówienia. Zapoznałem(-am) się z <a href="https://kacpertrzcinski884.github.io/profilmat/regulamin.html" target="_blank">regulaminem</a> i <a href="https://kacpertrzcinski884.github.io/profilmat/polityka-prywatnosci.html" target="_blank">polityką prywatności</a>.</span></label>
 <button class="btn" id="ofSend" type="submit">Wyślij</button>
 <div id="ofR" role="status" style="font-weight:600"></div></form></div></div>
@@ -1206,21 +1206,29 @@ $("#shBan").onclick=()=>$("#shOpen").click();
 // TU WKLEJ KLUCZ Z WEB3FORMS (darmowy). Dopóki jest "WSTAW_KLUCZ", formularz niczego nie wysyła.
 const FORM_KEY="fbd74d6b-ea69-4c47-8cbc-36e92e44f1d1";
 const of=$("#of"),F=$("#ofF"),R=$("#ofR");let body="",kind="";
-const open=(t,sub,txt,k,dl)=>{$("#ofT").textContent=t;$("#ofS").textContent=sub;if(dl)txt+="\n\nRYSUNKI TECHNICZNE (wymiary całej wycieraczki i wcięć):\n"+dl;let da=$("#ofDw");if(!da){da=document.createElement("a");da.id="ofDw";da.target="_blank";da.rel="noopener";da.style.cssText="display:block;margin:6px 0 10px;font-weight:600";$("#ofS").after(da)}da.hidden=!dl;if(dl){da.href=dl;da.textContent="Zobacz rysunek techniczny, który dołączymy do zamówienia"}body=txt;kind=k;["ofU","ofH","ofZ","ofL","ofY"].forEach(i=>$("#"+i).required=k==="Zamówienie");R.textContent="";$("#ofSend").disabled=false;of.hidden=false;document.body.style.overflow="hidden"};
+const open=(t,sub,txt,k,dl)=>{$("#ofT").textContent=t;$("#ofS").textContent=sub;if(dl)txt+="\n\nRYSUNKI TECHNICZNE (wymiary całej wycieraczki i wcięć):\n"+dl;let da=$("#ofDw");if(!da){da=document.createElement("a");da.id="ofDw";da.target="_blank";da.rel="noopener";da.style.cssText="display:block;margin:6px 0 10px;font-weight:600";$("#ofS").after(da)}da.hidden=!dl;if(dl){da.href=dl;da.textContent="Zobacz rysunek techniczny, który dołączymy do zamówienia"}body=txt;kind=k;["ofU","ofH","ofZ","ofL","ofY"].forEach(i=>$("#"+i).required=k==="Zamówienie");R.textContent="";$("#ofSend").disabled=false;window.__ot=Date.now();of.hidden=false;document.body.style.overflow="hidden"};
 const close=()=>{of.hidden=true;document.body.style.overflow=""};
 $("#ofX").onclick=close;of.addEventListener("click",e=>{if(e.target===of)close()});
 $("#co").onclick=()=>{const cm=$("#cm");if(!cart.length){cm.textContent="Dodaj najpierw produkt do koszyka.";return}cm.textContent="";
  const lines=cart.map((c,i)=>(i+1)+". "+c.name+" - "+pln(c.gross)+" brutto").join("\n"),sum=cart.reduce((s,c)=>s+c.gross,0);
  open("Wyślij zamówienie","Razem "+pln(sum)+" brutto. Skontaktujemy się, żeby potwierdzić wycenę, termin i płatność.","ZAMÓWIENIE ZE SKLEPU\n"+lines+"\nRazem brutto: "+pln(sum),"Zamówienie",dwgLink(cart.flatMap(c=>c.dwg?[].concat(c.dwg):[])));$("#cart").classList.remove("open")};
 $("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi ustawieniami: "+cur.name,"ZAPYTANIE O WYCENĘ\n"+cur.name+"\nCena orientacyjna brutto: "+pln(cur.gross),"Zapytanie o wycenę",dwgLink([].concat(cur.dwg||[])))};
-F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked)return;
+F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked||$("#ofW").value)return;
  if(FORM_KEY==="WSTAW_KLUCZ"){R.textContent="Formularz nie jest jeszcze podłączony do poczty. Napisz do nas bezpośrednio.";return}
  const ac=window.__addr();if(!ac.ok){R.textContent=ac.err;return}
  const iv=window.__inv();if(!iv.ok){R.textContent=iv.err;return}
+ {const now=Date.now(),H=36e5;let L=[];try{L=JSON.parse(localStorage.getItem("ml_sent")||"[]").filter(t=>now-t<H)}catch(_){}
+  if(now-(window.__ot||0)<5000){R.textContent="Za szybko. Sprawdź dane i kliknij Wyślij jeszcze raz.";return}
+  if(L.length&&now-L[L.length-1]<60000){R.textContent="Poczekaj chwilę przed wysłaniem kolejnej wiadomości.";return}
+  if(L.length>=3){R.textContent="Wysłano już kilka wiadomości. Spróbuj później lub zadzwoń: +48 796 544 026.";return}
+  const txt=[$("#ofN").value,$("#ofM").value,$("#ofU").value,$("#ofL").value].join(" ");
+  if(/https?:\/\/|www\.|<\/?[a-z]/i.test(txt)){R.textContent="Prosimy nie wpisywać linków ani kodu w formularzu.";return}
+  if(!/[a-zA-ZĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2}/.test($("#ofN").value)){R.textContent="Wpisz poprawne imię i nazwisko lub nazwę firmy.";return}
+  window.__sentLog=L}
  $("#ofSend").disabled=true;R.textContent="Wysyłanie...";
  const msg=body+"\n\nKlient: "+$("#ofN").value+"\nE-mail: "+$("#ofE").value+"\nTelefon: "+$("#ofP").value+"\nAdres dostawy:\n  Ulica: "+$("#ofU").value+"\n  Numer domu / lokalu: "+$("#ofH").value+"\n  Kod pocztowy: "+$("#ofZ").value+"\n  Miejscowość: "+$("#ofL").value+"\n  Kraj: "+$("#ofY").value+"\nUwagi: "+$("#ofM").value+iv.txt+"\nZgoda na przetwarzanie danych: tak";
- try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:FORM_KEY,subject:kind+" ze sklepu MatLine",from_name:$("#ofN").value,email:$("#ofE").value,message:msg})});const j=await r.json();
-  if(j.success){R.textContent="Dziękujemy! Wiadomość została wysłana. Odezwiemy się na podany e-mail.";if(kind==="Zamówienie"){cart.length=0;save();draw()}F.reset();$("#ofY").value="Polska";$("#ofFK").value="Polska";window.__invReset()}else throw 0}
+ try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:FORM_KEY,subject:kind+" ze sklepu MatLine",from_name:$("#ofN").value,email:$("#ofE").value,message:msg,botcheck:""})});const j=await r.json();
+  if(j.success){try{localStorage.setItem("ml_sent",JSON.stringify((window.__sentLog||[]).concat(Date.now())))}catch(_){}R.textContent="Dziękujemy! Wiadomość została wysłana. Odezwiemy się na podany e-mail.";if(kind==="Zamówienie"){cart.length=0;save();draw()}F.reset();$("#ofY").value="Polska";$("#ofFK").value="Polska";window.__invReset()}else throw 0}
  catch(x){R.textContent="Nie udało się wysłać. Spróbuj ponownie lub napisz do nas bezpośrednio.";$("#ofSend").disabled=false}};
 })();
 
