@@ -1242,7 +1242,7 @@ function edgeLabels(){
 }
 function list(){
  const L=$("#shList");let h="";
- if(outline)h+='<div>'+(fan?'Układ wachlarzowy: '+fan.q.length+' profili, różne długości boków (tulejki ściśnięte różnie), pole ':'Własny obrys: '+outline.length+' punktów, pole ')+'+fm((area(outline)/10000).toFixed(2))+' m² <button type="button" class="btn ghost" data-d="o" style="padding:2px 10px">Usuń</button></div>';
+ if(outline)h+='<div>'+(fan?'Układ wachlarzowy: '+fan.q.length+' profili, różne długości boków (tulejki ściśnięte różnie), pole ':'Własny obrys: '+outline.length+' punktów, pole ')+fm((area(outline)/10000).toFixed(2))+' m² <button type="button" class="btn ghost" data-d="o" style="padding:2px 10px">Usuń</button></div>';
  cuts.forEach((c,i)=>{h+='<div>Wcięcie '+(i+1)+': '+dsc(c)+' <button type="button" class="btn ghost" data-d="'+i+'" style="padding:2px 10px">Usuń</button></div>'});
  if(!h)h='<span style="color:var(--mute)">Brak wcięć. Wycieraczka jest prostokątna.</span>';
  L.innerHTML=h;
