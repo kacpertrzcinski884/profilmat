@@ -1220,16 +1220,16 @@ F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked||$("#ofW").value)re
  const ac=window.__addr();if(!ac.ok){R.textContent=ac.err;return}
  const iv=window.__inv();if(!iv.ok){R.textContent=iv.err;return}
  {const now=Date.now(),H=36e5;let L=[];try{L=JSON.parse(localStorage.getItem("ml_sent")||"[]").filter(t=>now-t<H)}catch(_){}
-  if(now-(window.__ot||0)<5000){R.textContent="Za szybko. Sprawdź dane i kliknij Wyślij jeszcze raz.";return}
-  if(L.length&&now-L[L.length-1]<60000){R.textContent="Poczekaj chwilę przed wysłaniem kolejnej wiadomości.";return}
-  if(L.length>=3){R.textContent="Wysłano już kilka wiadomości. Spróbuj później lub zadzwoń: +48 796 544 026.";return}
+  if(now-(window.__ot||0)<2000){R.textContent="Prosimy chwilę poczekać i kliknąć Wyślij jeszcze raz.";R.scrollIntoView({block:"center",behavior:"smooth"});return}
+  if(L.length&&now-L[L.length-1]<30000){R.textContent="Poczekaj chwilę przed wysłaniem kolejnej wiadomości.";R.scrollIntoView({block:"center",behavior:"smooth"});return}
+  if(L.length>=6){R.textContent="Wysłano już kilka wiadomości. Spróbuj później lub zadzwoń: +48 796 544 026.";R.scrollIntoView({block:"center",behavior:"smooth"});return}
   const txt=[$("#ofN").value,$("#ofM").value,$("#ofU").value,$("#ofL").value].join(" ");
-  if(/https?:\/\/|www\.|<\/?[a-z]/i.test(txt)){R.textContent="Prosimy nie wpisywać linków ani kodu w formularzu.";return}
-  if(!/[a-zA-ZĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2}/.test($("#ofN").value)){R.textContent="Wpisz poprawne imię i nazwisko lub nazwę firmy.";return}
+  if(/https?:\/\/|www\.|<\/?[a-z]/i.test(txt)){R.textContent="Prosimy nie wpisywać linków ani kodu w formularzu.";R.scrollIntoView({block:"center",behavior:"smooth"});return}
+  if(!/[a-zA-ZĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2}/.test($("#ofN").value)){R.textContent="Wpisz poprawne imię i nazwisko lub nazwę firmy.";R.scrollIntoView({block:"center",behavior:"smooth"});return}
   window.__sentLog=L}
  $("#ofSend").disabled=true;R.textContent="Wysyłanie...";
  const msg=body+"\n\nKlient: "+$("#ofN").value+"\nE-mail: "+$("#ofE").value+"\nTelefon: "+$("#ofP").value+"\nAdres dostawy:\n  Ulica: "+$("#ofU").value+"\n  Numer domu / lokalu: "+$("#ofH").value+"\n  Kod pocztowy: "+$("#ofZ").value+"\n  Miejscowość: "+$("#ofL").value+"\n  Kraj: "+$("#ofY").value+"\nUwagi: "+$("#ofM").value+iv.txt+"\nZgoda na przetwarzanie danych: tak";
- try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:FORM_KEY,subject:kind+" ze sklepu MatLine",from_name:$("#ofN").value,email:$("#ofE").value,message:msg,botcheck:""})});const j=await r.json();
+ try{const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:FORM_KEY,subject:kind+" ze sklepu MatLine",from_name:$("#ofN").value,email:$("#ofE").value,message:msg})});const j=await r.json();
   if(j.success){try{localStorage.setItem("ml_sent",JSON.stringify((window.__sentLog||[]).concat(Date.now())))}catch(_){}R.textContent="Dziękujemy! Wiadomość została wysłana. Odezwiemy się na podany e-mail.";if(kind==="Zamówienie"){cart.length=0;save();draw()}F.reset();$("#ofY").value="Polska";$("#ofFK").value="Polska";window.__invReset()}else throw 0}
  catch(x){R.textContent="Nie udało się wysłać. Spróbuj ponownie lub napisz do nas bezpośrednio.";$("#ofSend").disabled=false}};
 })();
