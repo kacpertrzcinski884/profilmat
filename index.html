@@ -1274,7 +1274,7 @@ function dims(){
  let u=ln,v=wd;
  if(alt&&alt!==ln){const r=mkFan(ln,alt,wd,false);
   if(r.err){M.textContent=r.err;DM.textContent=r.err+" Na rysunku zostawiono prostokąt.";DM.style.display="block"}
-  else{fan=r;outline=r.env;hist.push("o");u=r.ext[0];v=r.ext[1];if(r.warn){DM.textContent=r.warn;DM.style.display="block";DM.style.borderColor="#d4a017";DM.style.background="rgba(212,160,23,.15)"}M.textContent="Wycieraczka z "+r.N+" profili. Długość przy 1. boku "+fm(ln)+" cm, przy 2. boku "+fm(alt)+" cm (tulejki ściśnięte różnie), szerokość "+fm(wd)+" cm. Profile nie są przycinane."}}
+  else{fan=r;outline=r.env;hist.push("o");u=r.ext[0];v=r.ext[1];M.textContent="Wycieraczka z "+r.N+" profili. Długość przy 1. boku "+fm(ln)+" cm, przy 2. boku "+fm(alt)+" cm, szerokość "+fm(wd)+" cm."}}
  W=horiz()?u:v;H=horiz()?v:u;size();list()}
 
 
