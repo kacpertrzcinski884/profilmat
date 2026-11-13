@@ -689,8 +689,8 @@ aside{width:100%}
 
 
 <script>
-const PR=[{id:"12/30",n:"Profil niski 12/30 mm",lo:"Profil niski",base:625,t:"Do domów i biur"},{id:"19/30",n:"Profil wysoki 19/30 mm",lo:"Profil wysoki",base:745,t:"Do wzmożonego ruchu"}];
-const WK=[{id:"tt",n:"Tekstylny",a:"t",b:"t",add:0},{id:"gm",n:"Gumowy",a:"g",b:"g",add:96},{id:"sz",n:"Szczotkowy",a:"s",b:"s",add:275},{id:"tg",n:"Mix tekstyl + guma",a:"t",b:"g",add:48},{id:"ts",n:"Mix tekstyl + szczotka",a:"t",b:"s",add:138},{id:"gs",n:"Mix guma + szczotka",a:"g",b:"s",add:186}];
+const PR=[{id:"12/30",n:"Profil niski 12/30 mm",lo:"Profil niski",base:680,t:"Do domów i biur"},{id:"19/30",n:"Profil wysoki 19/30 mm",lo:"Profil wysoki",base:800,t:"Do wzmożonego ruchu"}];
+const WK=[{id:"tt",n:"Tekstylny",a:"t",b:"t",add:0},{id:"gm",n:"Gumowy",a:"g",b:"g",add:100},{id:"sz",n:"Szczotkowy",a:"s",b:"s",add:290},{id:"tg",n:"Mix tekstyl + guma",a:"t",b:"g",add:50},{id:"ts",n:"Mix tekstyl + szczotka",a:"t",b:"s",add:145},{id:"gs",n:"Mix guma + szczotka",a:"g",b:"s",add:195}];
 const $=s=>document.querySelector(s),pln=v=>v.toLocaleString("pl-PL",{minimumFractionDigits:2,maximumFractionDigits:2})+" zł";
 const m2=(p,w)=>PR.find(x=>x.id===p).base+WK.find(x=>x.id===w).add;
 function shade(h,a){const n=parseInt(h.slice(1),16);return"#"+[n>>16&255,n>>8&255,n&255].map(v=>Math.max(0,Math.min(255,v+a)).toString(16).padStart(2,"0")).join("")}
