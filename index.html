@@ -667,28 +667,17 @@ aside{width:100%}
 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Kreator kształtu wycieraczki</h2><button type="button" class="btn ghost" id="shX">← Cofnij</button></div>
 <p style="color:var(--mute);margin:6px 0 12px">Wybierz narzędzie i rysuj na planie. Zielona kreska i strzałka pokazują, z której strony jest wejście. Profile układają się w poprzek kierunku wejścia. Miarka ma podziałkę co 1 cm (po powiększeniu planu co 1 mm), a wymiary rysujesz z dokładnością do 1 mm.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-<label style="font-size:.85rem;color:var(--mute)">Długość przy 1. boku (cm)<input id="shW" type="number" step="0.1" min="30" max="600" style="display:block;width:110px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Bok 1: długość (cm)<input id="shW" type="number" step="0.1" min="30" max="600" style="display:block;width:110px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Bok 2: długość (cm)<input id="shW2" type="number" step="0.1" min="30" max="600" placeholder="jak bok 1" style="display:block;width:110px"></label>
 <label style="font-size:.85rem;color:var(--mute)">Szerokość (cm)<input id="shH" type="number" step="0.1" min="30" max="300" style="display:block;width:110px"></label>
-<label style="font-size:.85rem;color:var(--mute)">Długość przy 2. boku (cm)<input id="shW2" type="number" step="0.1" min="30" max="600" placeholder="jak przy 1. boku" style="display:block;width:150px"></label>
 <label style="font-size:.85rem;color:var(--mute)">Powiększenie planu<input id="shZ" type="range" min="1" max="6" step="0.5" value="1" style="display:block;width:150px"><span id="shZv" style="font-size:.8rem">1×</span></label></div>
-<div style="font-size:.85rem;color:var(--mute);margin:-4px 0 10px">Długość liczy się w kierunku wejścia. Jeśli drugi bok ma inną długość, wpisz ją w polu „Długość przy 2. boku”, a wycieraczka będzie miała kształt trapezu. Szerokość jest jedna. Wymiary wpisujesz z dokładnością do 1 mm. Miarka pokazuje milimetry po powiększeniu planu (od ok. 4×).</div>
+<div style="font-size:.85rem;color:var(--mute);margin:-4px 0 10px">Długość liczy się w kierunku wejścia. Jeśli drugi bok ma inną długość, wpisz ją w polu „Bok 2: długość”, a profile ułożą się jak wachlarz (tulejki zostaną ściśnięte inaczej przy każdym boku). Szerokość jest jedna. Wymiary wpisujesz z dokładnością do 1 mm. Miarka pokazuje milimetry po powiększeniu planu (od ok. 4×).</div>
 <div id="shTools" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
 <button type="button" class="btn" data-t="rect">Wcięcie prostokątne</button>
 <button type="button" class="btn ghost" data-t="cut">Wcięcie dowolne</button>
 <button type="button" class="btn ghost" data-t="out">Własny kształt od zera</button>
 <button type="button" class="btn ghost" id="shUndo">Cofnij ruch</button>
-<button type="button" class="btn ghost" id="shClear">Wyczyść</button><button type="button" class="btn ghost" data-trap="1" id="shTrap">Trapez (boki równoległe różnej długości)</button><button type="button" class="btn ghost" id="shRot">Obróć o 90°</button><button type="button" class="btn ghost" id="shFlip">Zmień stronę wejścia</button></div>
-<div id="shTrapBox" hidden style="border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px">
-<div style="font-weight:600;margin-bottom:6px">Trapez: dwa boki równoległe mają różną długość</div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-<label style="font-size:.85rem;color:var(--mute)">Pierwszy bok równoległy (cm)<input id="trA" type="number" step="0.1" min="30" max="600" style="display:block;width:110px"></label>
-<label style="font-size:.85rem;color:var(--mute)">Drugi bok równoległy (cm)<input id="trB" type="number" step="0.1" min="30" max="600" style="display:block;width:110px"></label>
-<label style="font-size:.85rem;color:var(--mute)">Odległość między bokami (cm)<input id="trD" type="number" step="0.1" min="30" max="300" style="display:block;width:110px"></label>
-<label style="font-size:.85rem;color:var(--mute)">Długość boku skośnego (cm, opcjonalnie)<input id="trS" type="number" step="0.1" min="30" max="700" placeholder="np. 110" style="display:block;width:130px"></label>
-<label style="font-size:.85rem;color:var(--mute)">Boki równoległe biegną<select id="trOr" style="display:block"><option value="h">Wzdłuż kierunku wejścia (różna długość)</option><option value="v">W poprzek kierunku wejścia (różna szerokość)</option></select></label>
-<label style="font-size:.85rem;color:var(--mute)">Ułożenie<select id="trAl" style="display:block"><option value="c">Wyśrodkowany (symetryczny)</option><option value="l">Jeden bok prostopadły (po lewej)</option></select></label>
-<button type="button" class="btn" id="trGo">Zastosuj trapez</button></div>
-<small style="color:var(--mute);display:block;margin-top:6px">Podaj długości dwóch boków równoległych i odległość między nimi. Zamiast odległości możesz wpisać długość boku skośnego, wtedy odległość policzymy sami. Długości wszystkich boków zobaczysz na rysunku. Stronę wejścia zmienisz przyciskiem „Zmień stronę wejścia”.</small></div>
+<button type="button" class="btn ghost" id="shClear">Wyczyść</button><button type="button" class="btn ghost" id="shRot">Obróć o 90°</button><button type="button" class="btn ghost" id="shFlip">Zmień stronę wejścia</button></div>
 <div id="shHelp" style="font-size:.9rem;color:var(--mute);margin-bottom:8px"></div>
 <div id="shWrap" style="overflow:auto;max-width:100%;max-height:78vh;border-radius:8px"><canvas id="shC" style="width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;touch-action:none;cursor:crosshair"></canvas></div>
 <div id="shLeg" style="font-size:.85rem;color:var(--mute);margin-top:8px"></div>
@@ -1274,15 +1263,6 @@ $("#shFlip").onclick=()=>{ent={L:"R",R:"L",T:"B",B:"T"}[ent];list()};
 function sync(){$("#shW").value=horiz()?W:H;$("#shH").value=horiz()?H:W;$("#shW2").value="";lastSig=sigNow()}
 let lastSig="";const sigNow=()=>["shW","shH","shW2"].map(i=>$("#"+i).value).join("|");
 $("#shClear").onclick=()=>{cuts=[];outline=null;fan=null;pts=[];hist=[];list()};
-$("#shTrap").onclick=()=>{const bx=$("#shTrapBox");bx.hidden=!bx.hidden;if(!bx.hidden){const bb=base(),xs=bb.map(q=>q[0]),ys=bb.map(q=>q[1]);$("#trA").value=W;$("#trB").value=Math.max(30,Math.round(W*.6));$("#trD").value=H}};
-$("#trGo").onclick=()=>{const r1=x=>Math.round(x*10)/10,A=cl(r1(+$("#trA").value||0),30,600),B=cl(r1(+$("#trB").value||0),30,600),w=Math.max(A,B),l=$("#trAl").value==="l",dx=Math.abs(A-B)/(l?1:2),sl=r1(+$("#trS").value||0);
- let D=cl(r1(+$("#trD").value||0),30,600),msg="";
- if(sl&&A!==B){if(sl<=dx+1){$("#shMsg").textContent="Bok skośny jest za krótki: musi być dłuższy niż "+fm(Math.ceil(dx*10)/10)+" cm.";return}D=r1(Math.sqrt(sl*sl-dx*dx));msg="Odległość między bokami policzona z boku skośnego: "+D+" cm. "}
- const v=$("#trOr").value==="v";if(v?(w>300||D>600):(w>600||D>300)){$("#shMsg").textContent=v?"W poprzek wejścia szerokość może mieć najwyżej 300 cm, a odległość między bokami 600 cm.":"Wzdłuż wejścia boki mogą mieć najwyżej 600 cm, a odległość między nimi 300 cm.";return}
- const sv=[W,H,ent,cuts,pts,hist,outline,fan];W=w;H=D;ent=v?"T":"L";cuts=[];pts=[];hist=[];
- fan=null;if(A===B){outline=null}else if(!v){const fr=mkFan(A,B,D,l);if(fr.err){[W,H,ent,cuts,pts,hist,outline,fan]=sv;$("#shMsg").textContent=fr.err;return}fan=fr;outline=fr.env;W=fr.ext[0];H=fr.ext[1]}else{const ta=l?0:r1((w-A)/2),tb=l?0:r1((w-B)/2);outline=[[ta,0],[r1(ta+A),0],[r1(tb+B),D],[tb,D]]}
- if(outline)hist.push("o");
- $("#trA").value=A;$("#trB").value=B;$("#trD").value=D;sync();size();setTool("rect");list();$("#shMsg").textContent=msg+(A===B?"Boki mają taką samą długość, więc wycieraczka jest prostokątna.":"Trapez gotowy. Możesz dodać wcięcia albo zmienić stronę wejścia.")};
 $("#shList").onclick=e=>{const d=e.target.dataset&&e.target.dataset.d;if(d===undefined)return;if(d==="o"){outline=null;fan=null}else cuts.splice(+d,1);hist=[];list()};
 function dims(){
  if(sigNow()===lastSig)return;
