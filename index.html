@@ -633,8 +633,11 @@ aside{width:100%}
 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Kreator kształtu wycieraczki</h2><button type="button" class="btn ghost" id="shX">← Cofnij</button></div>
 <p style="color:var(--mute);margin:6px 0 12px">Wybierz narzędzie i rysuj na planie. Zielona kreska i strzałka pokazują, z której strony jest wejście. Profile układają się w poprzek kierunku wejścia. Miarka ma podziałkę co 1 cm, a wymiary rysujesz z dokładnością do 1 cm.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-<label style="font-size:.85rem;color:var(--mute)">Długość w kierunku wejścia (cm)<input id="shW" type="number" min="30" max="600" style="display:block;width:110px"></label>
-<label style="font-size:.85rem;color:var(--mute)">Szerokość (cm)<input id="shH" type="number" min="30" max="300" style="display:block;width:110px"></label></div>
+<label style="font-size:.85rem;color:var(--mute)">Długość w kierunku wejścia (cm)<input id="shW" type="number" step="0.1" min="30" max="600" style="display:block;width:110px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Szerokość (cm)<input id="shH" type="number" step="0.1" min="30" max="300" style="display:block;width:110px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Druga długość (cm), jeśli drugi bok jest inny<input id="shW2" type="number" step="0.1" min="30" max="600" placeholder="np. 120,8" style="display:block;width:150px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Druga szerokość (cm), jeśli drugi bok jest inny<input id="shH2" type="number" step="0.1" min="30" max="300" placeholder="np. 90,5" style="display:block;width:150px"></label></div>
+<div style="font-size:.85rem;color:var(--mute);margin:-4px 0 10px">Boki naprzeciw siebie mogą mieć różną długość, z dokładnością do 1 mm. Wpisz „drugą długość” albo „drugą szerokość” tylko wtedy, gdy przeciwległy bok jest inny. Wpisz jedną z nich, nie obie naraz.</div>
 <div id="shTools" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
 <button type="button" class="btn" data-t="rect">Wcięcie prostokątne</button>
 <button type="button" class="btn ghost" data-t="cut">Wcięcie dowolne</button>
@@ -1201,7 +1204,8 @@ document.querySelectorAll("#shTools [data-t]").forEach(b=>b.onclick=()=>setTool(
 $("#shUndo").onclick=()=>{if(pts.length){pts.pop();draw();return}const k=hist.pop();if(k==="c")cuts.pop();else if(k==="o")outline=null;list()};
 $("#shRot").onclick=()=>{const R=p=>[H-p[1],p[0]];cuts=cuts.map(c=>({...c,p:c.p.map(R)}));if(outline)outline=outline.map(R);const t=W;W=H;H=t;ent={L:"T",T:"R",R:"B",B:"L"}[ent];pts=[];hist=[];sync();size();list()};
 $("#shFlip").onclick=()=>{ent={L:"R",R:"L",T:"B",B:"T"}[ent];list()};
-function sync(){$("#shW").value=horiz()?W:H;$("#shH").value=horiz()?H:W}
+function sync(){$("#shW").value=horiz()?W:H;$("#shH").value=horiz()?H:W;$("#shW2").value="";$("#shH2").value="";lastSig=sigNow()}
+let lastSig="";const sigNow=()=>["shW","shH","shW2","shH2"].map(i=>$("#"+i).value).join("|");
 $("#shClear").onclick=()=>{cuts=[];outline=null;pts=[];hist=[];list()};
 $("#shTrap").onclick=()=>{const bx=$("#shTrapBox");bx.hidden=!bx.hidden;if(!bx.hidden){const bb=base(),xs=bb.map(q=>q[0]),ys=bb.map(q=>q[1]);$("#trA").value=W;$("#trB").value=Math.max(30,Math.round(W*.6));$("#trD").value=H}};
 $("#trGo").onclick=()=>{const r1=x=>Math.round(x*10)/10,A=cl(r1(+$("#trA").value||0),30,600),B=cl(r1(+$("#trB").value||0),30,600),w=Math.max(A,B),l=$("#trAl").value==="l",dx=Math.abs(A-B)/(l?1:2),sl=r1(+$("#trS").value||0);
@@ -1213,8 +1217,20 @@ $("#trGo").onclick=()=>{const r1=x=>Math.round(x*10)/10,A=cl(r1(+$("#trA").value
  if(outline)hist.push("o");
  $("#trA").value=A;$("#trB").value=B;$("#trD").value=D;sync();size();setTool("rect");list();$("#shMsg").textContent=msg+(A===B?"Boki mają taką samą długość, więc wycieraczka jest prostokątna.":"Trapez gotowy. Możesz dodać wcięcia albo zmienić stronę wejścia.")};
 $("#shList").onclick=e=>{const d=e.target.dataset&&e.target.dataset.d;if(d===undefined)return;if(d==="o")outline=null;else cuts.splice(+d,1);hist=[];list()};
-function dims(){const ln=cl(+$("#shW").value||30,30,600),wd=cl(+$("#shH").value||30,30,300),w=horiz()?ln:wd,h=horiz()?wd:ln;if(w!==W||h!==H){W=w;H=h;cuts=[];outline=null;pts=[];hist=[];size();list()}}
-$("#shW").onchange=$("#shH").onchange=dims;
+function dims(){
+ if(sigNow()===lastSig)return;
+ const r1=x=>Math.round(x*10)/10,v1=+$("#shW").value||0,v2=+$("#shH").value||0,a2=+$("#shW2").value||0,b2=+$("#shH2").value||0,M=$("#shMsg");
+ if(a2&&b2){M.textContent="Wpisz tylko jedną: drugą długość albo drugą szerokość.";return}
+ const ln=cl(r1(v1),30,600),wd=cl(r1(v2),30,300),alt=a2?cl(r1(a2),30,600):(b2?cl(r1(b2),30,300):0);
+ lastSig=sigNow();cuts=[];pts=[];hist=[];outline=null;M.textContent="";
+ let u=ln,v=wd;
+ if(alt&&alt!==(a2?ln:wd)){
+  let pu;
+  if(a2){const m=Math.max(ln,alt),oa=r1((m-ln)/2),ob=r1((m-alt)/2);u=m;pu=[[oa,0],[r1(oa+ln),0],[r1(ob+alt),wd],[ob,wd]];M.textContent="Boki równoległe: "+fm(ln)+" cm i "+fm(alt)+" cm, odległość między nimi "+fm(wd)+" cm."}
+  else{const m=Math.max(wd,alt),oa=r1((m-wd)/2),ob=r1((m-alt)/2);v=m;pu=[[0,oa],[ln,ob],[ln,r1(ob+alt)],[0,r1(oa+wd)]];M.textContent="Boki równoległe: "+fm(wd)+" cm i "+fm(alt)+" cm, odległość między nimi "+fm(ln)+" cm."}
+  outline=horiz()?pu:pu.map(q=>[q[1],q[0]]);hist.push("o")}
+ W=horiz()?u:v;H=horiz()?v:u;size();list()}
+["shW","shH","shW2","shH2"].forEach(i=>{$("#"+i).onchange=dims});
 $("#shOpen").onclick=()=>{ent="L";W=cl(+$("#cL").value||120,30,600);H=cl(+$("#cS").value||90,30,300);sync();cuts=[];outline=null;pts=[];hist=[];sh.hidden=false;document.body.style.overflow="hidden";sh.scrollTop=0;size();setTool("rect");list();$("#shMsg").textContent=""};
 $("#shX").onclick=()=>{sh.hidden=true;document.body.style.overflow=""};
 addEventListener("resize",()=>{if(!sh.hidden){size();draw()}});
