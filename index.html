@@ -578,6 +578,7 @@ aside{width:100%}
 <label>Szerokość, np. światło drzwi (cm)<input id="cS" type="number" min="30" max="300" value="90"></label>
 <div id="splitHint" class="full" hidden style="background:var(--g2);border:1px solid var(--acc);border-radius:8px;padding:12px 14px;font-size:.95rem"><b>Duża wycieraczka. Proponujemy podział na 2 części.</b><br><span id="splitTxt"></span><br><button type="button" class="btn ghost" id="splitBtn" style="margin-top:8px">Podziel na 2 części</button><div id="splitParts" hidden style="margin-top:12px;display:none"></div></div>
 <label class="full">Montaż<select id="cM"><option value="0">We wpuście w posadzce</option><option value="0">Na posadzce</option></select></label>
+<div id="montNote" class="full" style="background:#fff7e0;border:1px solid #d9a441;color:#5b3d00;border-radius:8px;padding:10px 12px;font-size:.92rem"><b>Montaż nie jest wliczony w cenę.</b> Wybrałeś montaż we wpuście w posadzce. Do zamówienia dołączymy zapytanie o montaż. Koszt montażu ustalimy z Tobą w prywatnym kontakcie (telefon lub e-mail), a dopłata nastąpi dopiero po uzgodnieniu.</div>
 <label class="full">Próg najazdowy (aluminiowy, do domówienia)<select id="cR"><option value="0">Bez progu</option><option value="1">Próg z 1 strony (wejście)</option><option value="2">Progi z 2 stron (wejście i wyjście)</option><option value="4">Próg dookoła, 4 boki</option></select></label>
 <label class="full">Ramka dookoła wycieraczki ( srebrny kątownik, kołnierz 24,5 mm idzie pod wycieraczkę: do profilu niskiego wysokość 13,5 mm, do wysokiego 21 mm)<select id="cF"><option value="0">Bez ramki</option><option value="1">Z ramką dookoła</option></select></label>
 <div class="full" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="add">Dodaj do koszyka</button><button class="btn ghost" id="quote">Poproś o wycenę</button></div>
@@ -682,7 +683,7 @@ aside{width:100%}
 <aside id="cart" aria-label="Koszyk">
 <div style="display:flex;justify-content:space-between;align-items:center"><h3>Twój koszyk</h3><button class="btn ghost" id="close">Zamknij</button></div>
 <div id="items"></div>
-<div class="it" style="font-weight:700;border:0"><span>Razem brutto</span><span id="tot">0 zł</span></div>
+<div id="cartMont" hidden style="font-size:.88rem;background:#fff7e0;border:1px solid #d9a441;color:#5b3d00;border-radius:8px;padding:8px 10px;margin:8px 0">Montaż nie jest wliczony w cenę. Jego koszt ustalimy z Tobą w prywatnym kontakcie.</div><div class="it" style="font-weight:700;border:0"><span>Razem brutto</span><span id="tot">0 zł</span></div>
 <button class="btn" id="co">Złóż zamówienie</button>
 <div class="msg" id="cm"></div>
 </aside>
@@ -869,7 +870,7 @@ function upd(){
  $("#sArea").textContent=a.toFixed(2).replace(".",",")+" m²";$("#sPr").textContent=pl.n+" szt.";$("#sSp").textContent=pl.n>1?(pl.n-1)+" szt.":"brak";$("#sLen").textContent=fc(L)+" cm (swobodnie "+fc((pl.L+pl.n-1)/10)+" cm)";$("#sNote").textContent=(d?"Wymiar zewnętrzny z ramką: "+fc(Lo)+" × "+S+" cm. Wkład ma "+fc(L)+" × "+fc(Si)+" cm (odjęto 1,2 cm: 2 ścianki ramki po 5 mm i 2 mm luzu technicznego). ":"")+(pl.L!==Math.round((Lin-d)*10)?"Długość dopasowano do najbliższej możliwej: "+fc(Lo)+" cm.":"Tulejki dystansowe między profilami są ściśnięte, co zapewnia elastyczność maty.");$("#sM2").textContent=pln(pr);$("#sNet").textContent=pln(net);$("#sGross").textContent=pln(net*1.23);
  $("#cfgSvg").innerHTML=svg(cP.value,cW.value,col,col2);$("#cfgSec").innerHTML=strips(cP.value,cW.value,col,400,240,col2).match(/<defs>.*?<\/defs>/)[0]+section(cP.value,cW.value,col,col2);render3d(cP.value,cW.value,col,mix?col2:col,L,Si);
  const cn=mix?`${LN[kk.a]}: ${cname(col).toLowerCase()}, ${LN[kk.b]}: ${cname(col2).toLowerCase()}`:cname(col);
- cur={name:`${kk.n}, ${PR.find(x=>x.id===cP.value).lo.toLowerCase()} ${cP.value}, ${cn}, ${fc(Lo)}×${S} cm${d?" (wymiar zewnętrzny)":""}, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}${fr?", z ramką dookoła":""}`,gross:Math.round(net*123)/100,dwg:{fr,fo:fr?[Lo,S]:0,k:"std",n:kk.n+", profil "+cP.value,W:L,H:Si,S:Si,e:"L",p:cP.value,wn:kk.n,c:col,cn:cname(col),c2:mix?col2:"",c2n:mix?cname(col2):"",np:pl.n,rk}};
+ cur={name:`${kk.n}, ${PR.find(x=>x.id===cP.value).lo.toLowerCase()} ${cP.value}, ${cn}, ${fc(Lo)}×${S} cm${d?" (wymiar zewnętrzny)":""}, ${pl.n} profili${rk?", "+$("#cR").selectedOptions[0].textContent.toLowerCase():""}${fr?", z ramką dookoła":""}${$("#cM").selectedIndex===0?", montaż w posadzce (wycena montażu do uzgodnienia)":""}`,gross:Math.round(net*123)/100,dwg:{fr,fo:fr?[Lo,S]:0,k:"std",n:kk.n+", profil "+cP.value,W:L,H:Si,S:Si,e:"L",p:cP.value,wn:kk.n,c:col,cn:cname(col),c2:mix?col2:"",c2n:mix?cname(col2):"",np:pl.n,rk}};
 }
 $("#splitBtn").onclick=()=>{
  const h=$("#splitHint"),box=$("#splitParts"),big=+$("#cL").value>=300,L0=+$("#cL").value||0,S0=+$("#cS").value||0;
@@ -894,7 +895,7 @@ function cartThumb(c){let k=null;const d=[].concat(c.dwg||[])[0];if(d&&d.k==="ma
  if(d&&d.wn)k=WK.find(x=>x.n===d.wn);if(!k)k=WK.slice().sort((a,b)=>b.n.length-a.n.length).find(x=>c.name.indexOf(x.n)===0);
  return k?'<div class="cth rp '+(CLS[k.id]||"")+'"></div>':""}
 function draw(){
- $("#cnt").textContent=cart.length;
+ $("#cnt").textContent=cart.length;{const cm=document.getElementById("cartMont");if(cm)cm.hidden=!cart.some(c=>/montaż w posadzce/.test(c.name))}
  const w=$("#items");w.innerHTML=cart.length?"":"<p style='color:var(--mute)'>Koszyk jest pusty. Skonfiguruj wycieraczkę i dodaj ją tutaj.</p>";
  cart.forEach((c,i)=>{const d=document.createElement("div");d.className="it";d.innerHTML=`${cartThumb(c)}<span style="flex:1">${c.name}<br><b>${pln(c.gross)}</b>${c.dwg?`<br><a href="${dwgLink([].concat(c.dwg))}" target="_blank" rel="noopener" style="font-size:.85rem">Zobacz rysunek techniczny</a>`:""}</span><button>Usuń</button>`;d.querySelector("button").onclick=()=>{cart.splice(i,1);save();draw()};w.append(d)});
  $("#tot").textContent=pln(cart.reduce((s,c)=>s+c.gross,0));
@@ -1211,8 +1212,9 @@ const close=()=>{of.hidden=true;document.body.style.overflow=""};
 $("#ofX").onclick=close;of.addEventListener("click",e=>{if(e.target===of)close()});
 $("#co").onclick=()=>{const cm=$("#cm");if(!cart.length){cm.textContent="Dodaj najpierw produkt do koszyka.";return}cm.textContent="";
  const lines=cart.map((c,i)=>(i+1)+". "+c.name+" - "+pln(c.gross)+" brutto").join("\n"),sum=cart.reduce((s,c)=>s+c.gross,0);
- open("Wyślij zamówienie","Razem "+pln(sum)+" brutto. Skontaktujemy się, żeby potwierdzić wycenę, termin i płatność.","ZAMÓWIENIE ZE SKLEPU\n"+lines+"\nRazem brutto: "+pln(sum),"Zamówienie",dwgLink(cart.flatMap(c=>c.dwg?[].concat(c.dwg):[])));$("#cart").classList.remove("open")};
-$("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi ustawieniami: "+cur.name,"ZAPYTANIE O WYCENĘ\n"+cur.name+"\nCena orientacyjna brutto: "+pln(cur.gross),"Zapytanie o wycenę",dwgLink([].concat(cur.dwg||[])))};
+ const mt=cart.some(c=>/montaż w posadzce/.test(c.name)),MN="\n\nZAPYTANIE O MONTAŻ: klient prosi o wycenę montażu w posadzce. Koszt montażu NIE jest wliczony w cenę zamówienia. Wycenę i płatność za montaż uzgodnić z klientem w prywatnym kontakcie.";
+ open("Wyślij zamówienie","Razem "+pln(sum)+" brutto. Skontaktujemy się, żeby potwierdzić wycenę, termin i płatność."+(mt?" Montaż nie jest wliczony w cenę: jego koszt ustalimy z Tobą w prywatnym kontakcie, a dopłata nastąpi po uzgodnieniu.":""),"ZAMÓWIENIE ZE SKLEPU\n"+lines+"\nRazem brutto: "+pln(sum)+(mt?MN:""),"Zamówienie",dwgLink(cart.flatMap(c=>c.dwg?[].concat(c.dwg):[])));$("#cart").classList.remove("open")};
+$("#quote").onclick=()=>{open("Poproś o wycenę","Wyślemy zapytanie z Twoimi ustawieniami: "+cur.name,"ZAPYTANIE O WYCENĘ\n"+cur.name+"\nCena orientacyjna brutto: "+pln(cur.gross)+(/montaż w posadzce/.test(cur.name)?"\n\nZAPYTANIE O MONTAŻ: klient prosi o wycenę montażu w posadzce. Koszt montażu NIE jest wliczony w cenę. Wycenę uzgodnić z klientem w prywatnym kontakcie.":""),"Zapytanie o wycenę",dwgLink([].concat(cur.dwg||[])))};
 F.onsubmit=async e=>{e.preventDefault();if($("#ofB").checked||$("#ofW").value)return;
  if(FORM_KEY==="WSTAW_KLUCZ"){R.textContent="Formularz nie jest jeszcze podłączony do poczty. Napisz do nas bezpośrednio.";return}
  const ac=window.__addr();if(!ac.ok){R.textContent=ac.err;return}
@@ -1373,6 +1375,7 @@ document.querySelectorAll("canvas.lv,#leaves").forEach(function(c){try{field(c)}
 }catch(e){}
 })();
 </script>
+<script>(function(){var m=document.getElementById("cM"),n=document.getElementById("montNote");if(!m||!n)return;function t(){n.hidden=m.selectedIndex!==0}m.addEventListener("input",t);m.addEventListener("change",t);t()})();</script>
 <script id="lazy3">(function(){var done=false;function go(){if(done)return;done=true;["pointerdown","touchstart","keydown","scroll","mousemove"].forEach(function(e){removeEventListener(e,go,true)});var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";s.async=true;s.onload=function(){try{var e=document.querySelector("#cL");if(e)e.dispatchEvent(new Event("input",{bubbles:true}))}catch(x){}};document.head.appendChild(s)}
 ["pointerdown","touchstart","keydown","scroll","mousemove"].forEach(function(e){addEventListener(e,go,{capture:true,passive:true})});
 if(/^#\/produkt/.test(location.hash))go()})();</script></body>
