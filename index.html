@@ -644,12 +644,14 @@ aside{width:100%}
 <div id="shTrapBox" hidden style="border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px">
 <div style="font-weight:600;margin-bottom:6px">Trapez: dwa boki równoległe mają różną długość</div>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-<label style="font-size:.85rem;color:var(--mute)">Bok górny (cm)<input id="trA" type="number" min="30" max="600" style="display:block;width:110px"></label>
-<label style="font-size:.85rem;color:var(--mute)">Bok dolny (cm)<input id="trB" type="number" min="30" max="600" style="display:block;width:110px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Pierwszy bok równoległy (cm)<input id="trA" type="number" min="30" max="600" style="display:block;width:110px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Drugi bok równoległy (cm)<input id="trB" type="number" min="30" max="600" style="display:block;width:110px"></label>
 <label style="font-size:.85rem;color:var(--mute)">Odległość między bokami (cm)<input id="trD" type="number" min="30" max="300" style="display:block;width:110px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Długość boku skośnego (cm, opcjonalnie)<input id="trS" type="number" min="30" max="700" placeholder="np. 110" style="display:block;width:130px"></label>
+<label style="font-size:.85rem;color:var(--mute)">Boki równoległe leżą<select id="trOr" style="display:block"><option value="h">Poziomo (różna szerokość)</option><option value="v">Pionowo (różna długość)</option></select></label>
 <label style="font-size:.85rem;color:var(--mute)">Ułożenie<select id="trAl" style="display:block"><option value="c">Wyśrodkowany (symetryczny)</option><option value="l">Jeden bok prostopadły (po lewej)</option></select></label>
 <button type="button" class="btn" id="trGo">Zastosuj trapez</button></div>
-<small style="color:var(--mute);display:block;margin-top:6px">Boki równoległe są na planie poziomo. Jeśli mają leżeć pionowo, kliknij potem „Obróć o 90°”. Stronę wejścia zmienisz przyciskami „Obróć o 90°” i „Zmień stronę wejścia”.</small></div>
+<small style="color:var(--mute);display:block;margin-top:6px">Podaj długości dwóch boków równoległych i odległość między nimi. Zamiast odległości możesz wpisać długość boku skośnego, wtedy odległość policzymy sami. Długości wszystkich boków zobaczysz na rysunku. Stronę wejścia zmienisz przyciskiem „Zmień stronę wejścia”.</small></div>
 <div id="shHelp" style="font-size:.9rem;color:var(--mute);margin-bottom:8px"></div>
 <canvas id="shC" style="width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;touch-action:none;cursor:crosshair"></canvas>
 <div id="shLeg" style="font-size:.85rem;color:var(--mute);margin-top:8px"></div>
@@ -1202,10 +1204,15 @@ $("#shFlip").onclick=()=>{ent={L:"R",R:"L",T:"B",B:"T"}[ent];list()};
 function sync(){$("#shW").value=horiz()?W:H;$("#shH").value=horiz()?H:W}
 $("#shClear").onclick=()=>{cuts=[];outline=null;pts=[];hist=[];list()};
 $("#shTrap").onclick=()=>{const bx=$("#shTrapBox");bx.hidden=!bx.hidden;if(!bx.hidden){const bb=base(),xs=bb.map(q=>q[0]),ys=bb.map(q=>q[1]);$("#trA").value=W;$("#trB").value=Math.max(30,Math.round(W*.6));$("#trD").value=H}};
-$("#trGo").onclick=()=>{const A=cl(Math.round(+$("#trA").value||0),30,600),B=cl(Math.round(+$("#trB").value||0),30,600),D=cl(Math.round(+$("#trD").value||0),30,300),w=Math.max(A,B);
+$("#trGo").onclick=()=>{const A=cl(Math.round(+$("#trA").value||0),30,600),B=cl(Math.round(+$("#trB").value||0),30,600),w=Math.max(A,B),l=$("#trAl").value==="l",dx=Math.abs(A-B)/(l?1:2),sl=Math.round(+$("#trS").value||0);
+ let D=cl(Math.round(+$("#trD").value||0),30,600),msg="";
+ if(sl&&A!==B){if(sl<=dx+1){$("#shMsg").textContent="Bok skośny jest za krótki: musi być dłuższy niż "+fm(Math.ceil(dx))+" cm.";return}D=Math.round(Math.sqrt(sl*sl-dx*dx));msg="Odległość między bokami policzona z boku skośnego: "+D+" cm. "}
+ const v=$("#trOr").value==="v";if(D>(v?600:300)||(v?A>300||B>300:0)){$("#shMsg").textContent=v?"Przy układzie pionowym boki równoległe mogą mieć najwyżej 300 cm, a odległość między nimi 600 cm.":"Odległość między bokami może mieć najwyżej 300 cm.";return}
  W=w;H=D;ent="T";cuts=[];pts=[];hist=[];
- if(A===B){outline=null}else{const l=$("#trAl").value==="l",ta=l?0:Math.round((w-A)/2),tb=l?0:Math.round((w-B)/2);outline=[[ta,0],[ta+A,0],[tb+B,D],[tb,D]];hist.push("o")}
- $("#trA").value=A;$("#trB").value=B;$("#trD").value=D;sync();size();setTool("rect");list();$("#shMsg").textContent=A===B?"Boki mają taką samą długość, więc wycieraczka jest prostokątna.":"Trapez gotowy. Możesz dodać wcięcia albo zmienić stronę wejścia."};
+ if(A===B){outline=null}else{const ta=l?0:Math.round((w-A)/2),tb=l?0:Math.round((w-B)/2);outline=[[ta,0],[ta+A,0],[tb+B,D],[tb,D]]}
+ if(v){const R=q=>[H-q[1],q[0]];if(outline)outline=outline.map(R);const t=W;W=H;H=t;ent="R"}
+ if(outline)hist.push("o");
+ $("#trA").value=A;$("#trB").value=B;$("#trD").value=D;sync();size();setTool("rect");list();$("#shMsg").textContent=msg+(A===B?"Boki mają taką samą długość, więc wycieraczka jest prostokątna.":"Trapez gotowy. Możesz dodać wcięcia albo zmienić stronę wejścia.")};
 $("#shList").onclick=e=>{const d=e.target.dataset&&e.target.dataset.d;if(d===undefined)return;if(d==="o")outline=null;else cuts.splice(+d,1);hist=[];list()};
 function dims(){const ln=cl(+$("#shW").value||30,30,600),wd=cl(+$("#shH").value||30,30,300),w=horiz()?ln:wd,h=horiz()?wd:ln;if(w!==W||h!==H){W=w;H=h;cuts=[];outline=null;pts=[];hist=[];size();list()}}
 $("#shW").onchange=$("#shH").onchange=dims;
